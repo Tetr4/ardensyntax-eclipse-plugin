@@ -691,15 +691,14 @@ Public License instead of this License.  But first, please read
 
    <requires>
       <import plugin="org.eclipse.xtext" version="2.1.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.log4j" version="1.2.15" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.common" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtext.util"/>
       <import plugin="org.eclipse.emf.ecore"/>
       <import plugin="org.eclipse.emf.common"/>
       <import plugin="org.antlr.runtime"/>
-      <import plugin="org.eclipse.xtext.common.types"/>
-      <import plugin="org.apache.commons.logging"/>
       <import plugin="org.eclipse.xtext.xbase.lib"/>
-      <import plugin="org.eclipse.xtend2.lib"/>
+      <import plugin="org.eclipse.xtext.common.types"/>
+      <import plugin="org.apache.log4j" version="1.2.15" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtext.ui"/>
       <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.5.0" match="greaterOrEqual"/>
@@ -712,14 +711,16 @@ Public License instead of this License.  But first, please read
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.jdt.launching" version="3.6.1" match="greaterOrEqual"/>
       <import plugin="Arden2ByteCodeCompiler" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.debug.ui" version="3.7.101" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.core" version="3.7.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.ui" version="3.7.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.ui" version="2.2.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.launching" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.debug.ui" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.ui" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.ui" version="2.0.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.expressions" version="3.4.300" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.debug" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.debug.ui" version="3.6.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

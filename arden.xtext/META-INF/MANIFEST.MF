@@ -1,38 +1,31 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: %Bundle-Name
-Bundle-Vendor: %Bundle-Vendor
+Bundle-Name: Arden Syntax Plugin (xText-based)
+Bundle-Vendor: Arden2ByteCode.sf.net
 Bundle-Version: 1.0.3.qualifier
 Bundle-SymbolicName: arden.xtext; singleton:=true
-Require-Bundle: org.eclipse.xtext;bundle-version="2.1.0";visibility:=reexport,
- org.eclipse.xtext.xbase;bundle-version="2.1.0";resolution:=optional;visibility:=reexport,
- org.apache.log4j;bundle-version="1.2.15";visibility:=reexport,
- org.apache.commons.logging;bundle-version="1.0.4";resolution:=optional;visibility:=reexport,
- org.eclipse.xtext.generator;resolution:=optional,
- org.eclipse.emf.codegen.ecore;resolution:=optional,
- org.eclipse.emf.mwe.utils;resolution:=optional,
- org.eclipse.emf.mwe2.launch;resolution:=optional,
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtext;visibility:=reexport,
+ org.eclipse.equinox.common;bundle-version="3.5.0",
  org.eclipse.xtext.util,
  org.eclipse.emf.ecore,
  org.eclipse.emf.common,
  org.antlr.runtime,
- org.eclipse.xtext.common.types
-Import-Package: org.apache.commons.logging,
- org.apache.log4j,
  org.eclipse.xtext.xbase.lib,
- org.eclipse.xtext.xtend2.lib,
- org.eclipse.xtend2.lib
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6,JavaSE-1.7
+ org.eclipse.xtext.common.types,
+ org.objectweb.asm;bundle-version="[5.0.1,6.0.0)";resolution:=optional
+Import-Package: org.apache.log4j
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: arden.xtext,
+ arden.xtext.services,
  arden.xtext.ardenSyntax,
  arden.xtext.ardenSyntax.impl,
  arden.xtext.ardenSyntax.util,
- arden.xtext.formatting,
- arden.xtext.generator,
- arden.xtext.parser.antlr,
- arden.xtext.parser.antlr.internal;x-internal:=true,
- arden.xtext.scoping,
  arden.xtext.serializer,
- arden.xtext.services,
+ arden.xtext.parser.antlr,
+ arden.xtext.parser.antlr.internal,
+ arden.xtext.parser.antlr.lexer,
  arden.xtext.validation,
- arden.xtext.parser.antlr.lexer
+ arden.xtext.scoping,
+ arden.xtext.generator,
+ arden.xtext.formatting
