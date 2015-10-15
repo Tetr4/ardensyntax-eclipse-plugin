@@ -7,10 +7,9 @@
     <package 
        uri = "http://www.xtext.arden/ArdenSyntax" 
        class = "arden.xtext.ardenSyntax.ArdenSyntaxPackage"
-       genModel = "arden/xtext/ArdenSyntax.genmodel" /> 
+       genModel = "model/generated/ArdenSyntax.genmodel" /> 
 	
   </extension>
-
 
 
 
