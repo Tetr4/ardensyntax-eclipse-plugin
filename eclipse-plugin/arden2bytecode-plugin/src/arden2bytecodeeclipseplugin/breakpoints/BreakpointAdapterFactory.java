@@ -9,12 +9,12 @@ import arden2bytecodeeclipseplugin.Activator;
 
 public class BreakpointAdapterFactory implements IAdapterFactory {
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
 		if (adaptableObject instanceof ITextEditor) {
 			ITextEditor editor = (ITextEditor) adaptableObject;
-			IResource resource = (IResource) editor.getEditorInput().getAdapter(IResource.class);
+			IResource resource = editor.getEditorInput().getAdapter(IResource.class);
 			if (resource != null) {
 				String extension = resource.getFileExtension();
 				if (extension != null && extension.equalsIgnoreCase(Activator.MLM_EXTENSION)) {
@@ -25,7 +25,7 @@ public class BreakpointAdapterFactory implements IAdapterFactory {
 		return null;
 	}
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Class[] getAdapterList() {
 		return new Class[]{IToggleBreakpointsTarget.class};
