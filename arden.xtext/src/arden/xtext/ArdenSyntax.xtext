@@ -47,9 +47,9 @@ terminal fragment us: '_';
 //terminal data_mapping: 'data_mapping';
 
 // numbers
-terminal fragment INT: ('0'..'9')+;
-terminal exponent: ('e' | 'E') ('+' | '-')? INT;
-terminal number_literal : (INT ('.' INT?)? exponent?) | ('.' INT exponent?);
+terminal fragment ddigits: digit+;
+terminal exponent: ('e' | 'E') ('+' | '-')? ddigits;
+terminal number_literal : (ddigits ('.' ddigits?)? exponent?) | ('.' ddigits exponent?);
 
 // id & mlmname
 terminal ID : letter (letter | us | digit)*;
@@ -60,7 +60,7 @@ terminal fragment simplestring: !'"';
 terminal string_literal : '"' simplestring* ('""' simplestring+)* '"';
 
 // iso date/datetime
-terminal fragment fractional_seconds: ('.' INT)?;
+terminal fragment fractional_seconds: ('.' ddigits)?;
 terminal fragment time_zone: ('Z' | 'z' 
     | '+' digit digit ':' digit digit 
     | '-' digit digit ':' digit digit)?
