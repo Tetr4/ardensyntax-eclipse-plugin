@@ -17,7 +17,7 @@ public class ToggleBreakpointsTargetFactory implements
 
 	public static final String TARGET_ID = Activator.PLUGIN_ID + ".breakpoints.ToggleBreakpointsTargetFactory";
 	
-	public static Set TOGGLE_IDS = new HashSet(1);
+	public static Set<String> TOGGLE_IDS = new HashSet<String>(1);
 	
 	static {
 		TOGGLE_IDS.add(TARGET_ID);
@@ -30,7 +30,7 @@ public class ToggleBreakpointsTargetFactory implements
 	}
 
 	@Override
-	public Set getToggleTargets(IWorkbenchPart part, ISelection selection) {
+	public Set<String> getToggleTargets(IWorkbenchPart part, ISelection selection) {
 		if (part instanceof ITextEditor) {
 			return TOGGLE_IDS;
 		}
