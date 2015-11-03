@@ -3,32 +3,83 @@
 */
 package arden.xtext.ui.labeling;
 
+import java.util.List;
+
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
+import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
 
 import com.google.inject.Inject;
 
+import arden.xtext.ardenSyntax.P_mlm;
+import arden.xtext.ardenSyntax.action_slot;
+import arden.xtext.ardenSyntax.data_slot;
+import arden.xtext.ardenSyntax.evoke_slot;
+import arden.xtext.ardenSyntax.knowledge_category;
+import arden.xtext.ardenSyntax.library_category;
+import arden.xtext.ardenSyntax.logic_slot;
+import arden.xtext.ardenSyntax.maintenance_category;
+import arden.xtext.ardenSyntax.mlmname_text;
+
 /**
  * Provides labels for a EObjects.
  * 
- * see http://www.eclipse.org/Xtext/documentation/latest/xtext.html#labelProvider
+ * see
+ * http://www.eclipse.org/Xtext/documentation/latest/xtext.html#labelProvider
  */
 public class ArdenSyntaxLabelProvider extends DefaultEObjectLabelProvider {
 
-	@Inject
-	public ArdenSyntaxLabelProvider(AdapterFactoryLabelProvider delegate) {
-		super(delegate);
-	}
-
-/*
-	//Labels and icons can be computed like this:
-	
-	String text(MyModel ele) {
-	  return "my "+ele.getName();
-	}
-	 
-    String image(MyModel ele) {
-      return "MyModel.gif";
+    @Inject
+    public ArdenSyntaxLabelProvider(AdapterFactoryLabelProvider delegate) {
+        super(delegate);
     }
-*/
+
+    String text(P_mlm module) {
+        // check if mlmname element exists in module body
+        List<mlmname_text> nameTexts = EcoreUtil2.getAllContentsOfType(module, mlmname_text.class);
+        if (!nameTexts.isEmpty()) {
+            // return its id or text
+            mlmname_text nameText = nameTexts.get(0);
+
+            String name = nameText.getText();
+            if (name != null && !name.isEmpty()) {
+                return "MLM: " + name;
+            }
+        }
+        return "Medical Logic Module";
+    }
+
+    // TODO image for modules in outline
+    // String image(P_mlm module) {
+    // return "Module.gif";
+    // }
+
+    String text(maintenance_category libraryCategory) {
+        return "Maintenance";
+    }
+
+    String text(library_category libraryCategory) {
+        return "Library";
+    }
+
+    String text(knowledge_category knowledgeCategory) {
+        return "Knowledge";
+    }
+
+    String text(data_slot slot) {
+        return "data";
+    }
+
+    String text(evoke_slot slot) {
+        return "evoke";
+    }
+
+    String text(logic_slot slot) {
+        return "logic";
+    }
+
+    String text(action_slot slot) {
+        return "action";
+    }
+
 }
