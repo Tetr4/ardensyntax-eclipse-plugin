@@ -71,7 +71,8 @@ terminal ISO_DATE_TIME :  ISO_DATE CT DIGIT DIGIT ':' DIGIT DIGIT ':' DIGIT DIGI
 // from bracket to bracket
 terminal DATA_MAPPING :  '{' -> '}';
 
-mlmname_text: {mlmname_text}(id=ID | trm_mlmname_text=TRM_MLMNAME_TEXT);
+// Xtext doesn't have states for terminals like sablecc. Therefore we need a helper rule to match multiple overlapping terminals
+mlmname_text: {mlmname_text} text=(ID|TRM_MLMNAME_TEXT);
 terminal TERM :  "'" -> "'";
 
 
