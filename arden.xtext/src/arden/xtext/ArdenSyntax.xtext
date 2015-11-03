@@ -39,40 +39,40 @@ terminal ML_COMMENT : '/*' -> '*/';
 terminal SL_COMMENT : '//' !('\n'|'\r')* ('\r'? '\n')?;
 
 // some basic fragments
-terminal fragment ct : 'T';
-terminal fragment digit: '0'..'9';
-terminal fragment letter: 'a'..'z' | 'A'..'Z';
-terminal fragment us: '_';
+terminal fragment CT : 'T';
+terminal fragment DIGIT: '0'..'9';
+terminal fragment LETTER: 'a'..'z' | 'A'..'Z';
+terminal fragment US: '_';
 
 //terminal data_mapping: 'data_mapping';
 
 // numbers
-terminal fragment ddigits: digit+;
-terminal exponent: ('e' | 'E') ('+' | '-')? ddigits;
-terminal number_literal : (ddigits ('.' ddigits?)? exponent?) | ('.' ddigits exponent?);
+terminal fragment DDIGITS: DIGIT+;
+terminal EXPONENT: ('e' | 'E') ('+' | '-')? DDIGITS;
+terminal NUMBER_LITERAL : (DDIGITS ('.' DDIGITS?)? EXPONENT?) | ('.' DDIGITS EXPONENT?);
 
 // id & mlmname
-terminal ID : letter (letter | us | digit)*;
-terminal trm_mlmname_text : letter (letter | digit | us | '-' | '.')*;
+terminal ID : LETTER (LETTER | US | DIGIT)*;
+terminal TRM_MLMNAME_TEXT : LETTER (LETTER | DIGIT | US | '-' | '.')*;
 
 // strings
-terminal fragment simplestring: !'"';
-terminal string_literal : '"' simplestring* ('""' simplestring+)* '"';
+terminal fragment SIMPLESTRING: !'"';
+terminal STRING_LITERAL : '"' SIMPLESTRING* ('""' SIMPLESTRING+)* '"';
 
 // iso date/datetime
-terminal fragment fractional_seconds: ('.' ddigits)?;
-terminal fragment time_zone: ('Z' | 'z' 
-    | '+' digit digit ':' digit digit 
-    | '-' digit digit ':' digit digit)?
+terminal fragment FRACTIONAL_SECONDS: ('.' DDIGITS)?;
+terminal fragment TIME_ZONE: ('Z' | 'z' 
+    | '+' DIGIT DIGIT ':' DIGIT DIGIT 
+    | '-' DIGIT DIGIT ':' DIGIT DIGIT)?
 ;
-terminal iso_date :  digit digit digit digit '-' digit digit '-' digit digit;
-terminal iso_date_time :  iso_date ct digit digit ':' digit digit ':' digit digit fractional_seconds time_zone;
+terminal ISO_DATE :  DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT;
+terminal ISO_DATE_TIME :  ISO_DATE CT DIGIT DIGIT ':' DIGIT DIGIT ':' DIGIT DIGIT FRACTIONAL_SECONDS TIME_ZONE;
 
 // from bracket to bracket
-terminal data_mapping :  '{' -> '}';
+terminal DATA_MAPPING :  '{' -> '}';
 
-mlmname_text: {mlmname_text}(id=ID | trm_mlmname_text=trm_mlmname_text);
-terminal term :  "'" -> "'";
+mlmname_text: {mlmname_text}(id=ID | trm_mlmname_text=TRM_MLMNAME_TEXT);
+terminal TERM :  "'" -> "'";
 
 
 /******** parser rules: ***********/
@@ -86,13 +86,13 @@ maintenance_category:
                 'maintenance:' maintainance_body=maintenance_body;
 
 maintenance_body :
-                title_slot=title_slot
+                title_slot=TITLE_SLOT
                 mlmname_slot=mlmname_slot
                 arden_version_slot=arden_version_slot
                 version_slot=version_slot
-                institution_slot=institution_slot
-                author_slot=author_slot
-                specialist_slot=specialist_slot
+                institution_slot=INSTITUTION_SLOT
+                author_slot=AUTHOR_SLOT
+                specialist_slot=SPECIALIST_SLOT
                 date_slot=date_slot
                 validation_slot=validation_slot;
 
@@ -100,11 +100,11 @@ library_category :
                 'library:' library_body=library_body;
 
 library_body :
-                purpose_slot=purpose_slot
-                explanation_slot=explanation_slot
-                keywords_slot=keywords_slot
-                citations_slot=citations_slot?
-                links_slot=links_slot?;
+                purpose_slot=PURPOSE_SLOT
+                explanation_slot=EXPLANATION_SLOT
+                keywords_slot=KEYWORDS_SLOT
+                citations_slot=CITATIONS_SLOT?
+                links_slot=LINKS_SLOT?;
 
 knowledge_category :
                 'knowledge:' knowledge_body=knowledge_body;
@@ -122,7 +122,7 @@ knowledge_body :
 /****** slots ******/
 /****** maintenance: slots ******/
 
-terminal title_slot :
+terminal TITLE_SLOT :
                 'title:' -> ';;';
 
 mlmname_slot :
@@ -133,21 +133,21 @@ mlmname_slot :
 arden_version_slot :
 	{arden_version_slot}
       ('arden:' 'version' 
-      	version_number=number_literal 
+      	version_number=NUMBER_LITERAL 
       	';;'
       )?;  
     
 version_slot :
-                'version:' vnum=number_literal ';;';
+                'version:' vnum=NUMBER_LITERAL ';;';
 
-terminal institution_slot :
+terminal INSTITUTION_SLOT :
                 'institution:' -> ';;';
 
-terminal author_slot :
+terminal AUTHOR_SLOT :
                 'author:' -> ';;';
 
 
-terminal specialist_slot :
+terminal SPECIALIST_SLOT :
                 'specialist:' -> ';;';
 
 
@@ -155,8 +155,8 @@ date_slot :
                 'date:' mlm_date=mlm_date ';;';
 
 mlm_date :
-      iso_date
-    | iso_date_time;
+      ISO_DATE
+    | ISO_DATE_TIME;
 
 validation_slot :
                 'validation:'
@@ -171,11 +171,11 @@ validation_code :
 
 /****** library: slots ******/
 
-terminal purpose_slot: 'purpose:' -> ';;';
-terminal explanation_slot: 'explanation:' -> ';;';
-terminal keywords_slot: 'keywords:' -> ';;';
-terminal citations_slot: 'citations:' -> ';;';
-terminal links_slot: 'links:' -> ';;';
+terminal PURPOSE_SLOT: 'purpose:' -> ';;';
+terminal EXPLANATION_SLOT: 'explanation:' -> ';;';
+terminal KEYWORDS_SLOT: 'keywords:' -> ';;';
+terminal CITATIONS_SLOT: 'citations:' -> ';;';
+terminal LINKS_SLOT: 'links:' -> ';;';
 
 
 /****** knowledge: slots ******/
@@ -195,7 +195,7 @@ data_slot :
 
 priority_slot :
       {priority_slot}
-    ('priority:' priority=number_literal ';;')?;
+    ('priority:' priority=NUMBER_LITERAL ';;')?;
 
 evoke_slot :
                 'evoke:' evoke_block=evoke_block ';;';
@@ -211,7 +211,7 @@ urgency_slot :
     ('urgency:' urgency=urgency_val ';;')?;
 
 urgency_val :
-      number_literal
+      NUMBER_LITERAL
     | ID;
     
 
@@ -311,15 +311,15 @@ string_search_start :
 expr_string:
     expr_plus=expr_plus 
     	('||' expr_plus_b+=expr_plus 
-    		| 'formatted' 'with' str_literal+=string_literal
+    		| 'formatted' 'with' str_literal+=STRING_LITERAL
     	)*
     | 'trim' opt=trim_option? expr_plus=expr_plus 
     	('||' expr_plus_b+=expr_plus | 
-    		'formatted' 'with' str_literal+=string_literal
+    		'formatted' 'with' str_literal+=STRING_LITERAL
     	)*
     | 'substring' charcount=expr_plus 'characters' start=substring_start? 'from' expr_plus=expr_plus 
     	('||' expr_plus_b+=expr_plus | 
-    		'formatted' 'with' str_literal+=string_literal
+    		'formatted' 'with' str_literal+=STRING_LITERAL
     	)*;
     
 trim_option :
@@ -381,8 +381,8 @@ expr_factor :
 
 expr_factor_atom :
       id=ID
-    | num=number_literal
-    | str=string_literal
+    | num=NUMBER_LITERAL
+    | str=STRING_LITERAL
     | time=time_value
     | bool=boolean_value
     | {expr_factor_atom}'null'
@@ -585,8 +585,8 @@ boolean_value :
 
 time_value :
       'now'
-    | iso_date_time
-    | iso_date
+    | ISO_DATE_TIME
+    | ISO_DATE
     | 'eventtime'
     | 'triggertime'
     | 'currenttime';
@@ -626,7 +626,7 @@ data_var_list :
 
 data_assign_phrase :
 	  'read' ('as' id=ID)? read_phrase=read_phrase
-    | 'mlm' term=term ('from' 'institution' str=string_literal)?
+    | 'mlm' term=TERM ('from' 'institution' str=STRING_LITERAL)?
     | {data_assign_phrase} 'mlm' 'mlm_self'
     | 'interface' map=mapping_factor
     | 'event' map=mapping_factor
@@ -658,7 +658,7 @@ read_where :
 
 mapping_factor:
 	{mapping_factor}
-    mapping=data_mapping;
+    mapping=DATA_MAPPING;
 
 object_attribute_list :
       id=ID
@@ -701,8 +701,8 @@ event_factor :
 evoke_time :
       duration=evoke_duration 'after' time=evoke_time
     | 'time' 'of'? event=event_any
-    | datetime=iso_date_time
-    | date=iso_date;
+    | datetime=ISO_DATE_TIME
+    | date=ISO_DATE;
     
 qualified_evoke_cycle :
     evoke_cycle=simple_evoke_cycle ('until' expr=expr)?;
@@ -711,7 +711,7 @@ simple_evoke_cycle :
                 'every' interval=evoke_duration 'for' duration=evoke_duration 'starting' start=evoke_time;
 
 evoke_duration :
-                num=number_literal op=duration_op;
+                num=NUMBER_LITERAL op=duration_op;
                 
                 
 /****** action: block ******/
