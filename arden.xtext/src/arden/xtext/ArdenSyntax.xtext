@@ -48,7 +48,7 @@ terminal fragment US: '_';
 
 // numbers
 terminal fragment DDIGITS: DIGIT+;
-terminal EXPONENT: ('e' | 'E') ('+' | '-')? DDIGITS;
+terminal fragment EXPONENT: ('e' | 'E') ('+' | '-')? DDIGITS;
 terminal NUMBER_LITERAL : (DDIGITS ('.' DDIGITS?)? EXPONENT?) | ('.' DDIGITS EXPONENT?);
 
 // id & mlmname
