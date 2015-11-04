@@ -68,7 +68,11 @@ public class ArdenSyntaxSemanticHighlightingCalculator implements ISemanticHighl
                     String name = t.getName();
                     int index = highlightNames.indexOf(name);
                     if (index != -1) {
+                        // special terminal rules
                         acceptor.addPosition(node.getOffset(), highlightLengths[index],
+                                ArdenSyntaxHighlightingConfiguration.KEYWORD_ID);
+                        // also highlight the ";;" part
+                        acceptor.addPosition(node.getTotalEndOffset()-2, 2,
                                 ArdenSyntaxHighlightingConfiguration.KEYWORD_ID);
                     }
                 }
