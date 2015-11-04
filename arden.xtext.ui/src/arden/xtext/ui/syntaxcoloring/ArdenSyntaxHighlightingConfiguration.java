@@ -11,23 +11,30 @@ public class ArdenSyntaxHighlightingConfiguration implements
 
     public static final String KEYWORD_ID = "keyword";
     public static final String COMMENT_ID = "comment";
+    public static final String TEXT_ID = "text";
 
     @Override
     public void configure(IHighlightingConfigurationAcceptor acceptor) {
-        acceptor.acceptDefaultHighlighting(
-                COMMENT_ID, "Comment", commentTextStyle());
-        acceptor.acceptDefaultHighlighting(KEYWORD_ID, "Keyword",
-                keywordTextStyle());
+        acceptor.acceptDefaultHighlighting(COMMENT_ID, "Comment", commentTextStyle());
+        acceptor.acceptDefaultHighlighting(KEYWORD_ID, "Keyword", keywordTextStyle());
+        acceptor.acceptDefaultHighlighting(TEXT_ID, "Text", textTextStyle());
+        
     }
 
-    public TextStyle keywordTextStyle() {
+    private TextStyle textTextStyle() {
+        TextStyle textStyle = new TextStyle();
+        textStyle.setColor(new RGB(127, 127, 159));
+        return textStyle;
+    }
+
+    private TextStyle keywordTextStyle() {
         TextStyle textStyle = new TextStyle();
         textStyle.setColor(new RGB(127, 0, 85));
         textStyle.setStyle(SWT.BOLD);
         return textStyle;
     }
     
-    public TextStyle commentTextStyle() {
+    private TextStyle commentTextStyle() {
         TextStyle textStyle = new TextStyle();
         textStyle.setColor(new RGB(63, 127, 95));
         return textStyle;

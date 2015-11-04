@@ -1,7 +1,9 @@
 package arden.xtext.ui.syntaxcoloring;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.AbstractRule;
@@ -15,8 +17,8 @@ import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightedPositionAcceptor;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator;
 
 public class ArdenSyntaxSemanticHighlightingCalculator implements ISemanticHighlightingCalculator {
-
-    private static List<String> highlightNames = Arrays.asList(new String[]{
+    
+    private static List<String> slotTerminals = Arrays.asList(
             "TITLE_SLOT",
             "INSTITUTION_SLOT", 
             "AUTHOR_SLOT",
@@ -25,9 +27,10 @@ public class ArdenSyntaxSemanticHighlightingCalculator implements ISemanticHighl
             "EXPLANATION_SLOT",
             "KEYWORDS_SLOT",
             "CITATIONS_SLOT",
-            "LINKS_SLOT"});
+            "LINKS_SLOT"
+    );
     
-    private static int[] highlightLengths = new int[] {
+    private static int[] slotTerminalLabelLengths = new int[] {
             6,
             12,
             7,
@@ -36,7 +39,20 @@ public class ArdenSyntaxSemanticHighlightingCalculator implements ISemanticHighl
             12,
             9,
             10,
-            6 };
+            6
+    };
+    
+    private static Set<String> slotKeywords = new HashSet<String>(Arrays.asList(
+            "mlmname:",
+            "filename:",
+            "arden:",
+            "version:",
+            "date:",
+            "validation:",
+            "type:",
+            "priority:",
+            "urgency:"
+    ));
 
     @Override
     public void provideHighlightingFor(XtextResource resource, IHighlightedPositionAcceptor acceptor) {
@@ -46,38 +62,82 @@ public class ArdenSyntaxSemanticHighlightingCalculator implements ISemanticHighl
         }
 
         INode root = resource.getParseResult().getRootNode();
-        
+
+        // State, which is true while between "<highlightKeyword>:" and ";;"
+        // Allows slot content (even keywords) to be colored differently
+        boolean inSlot = false;
+
         for (ILeafNode node : root.getLeafNodes()) {
-            EObject current = node.getGrammarElement();
             if (node.isHidden()) {
-                // comments
-                acceptor.addPosition(node.getOffset(), node.getLength(),
-                  ArdenSyntaxHighlightingConfiguration.COMMENT_ID);
+                // comment
+                highlightAsComment(node, acceptor);
+                continue;
             }
-            if (current instanceof Keyword) {
-                // keywords
-                acceptor.addPosition(node.getOffset(), node.getLength(),
-                        ArdenSyntaxHighlightingConfiguration.KEYWORD_ID);
-            } else if (current instanceof RuleCall) {
-                // rules
-                RuleCall rulecall = (RuleCall) current;
+
+            EObject element = node.getGrammarElement();
+            if (element instanceof Keyword) {
+                // keyword
+                Keyword keyword = (Keyword) element;
+                if (slotKeywords.contains(keyword.getValue())) {
+                    // start of slot content
+                    inSlot = true;
+                    highlightAsKeyword(node, acceptor);
+                } else if (keyword.getValue().equals(";;")) {
+                    // end of slot content
+                    inSlot = false;
+                    highlightAsKeyword(node, acceptor);
+                } else if (inSlot) {
+                    highlightAsText(node, acceptor);
+                } else {
+                    highlightAsKeyword(node, acceptor);
+                }
+            } else if (inSlot) {
+                // something between "<highlightKeyword>:" and ";;"
+                highlightAsText(node, acceptor);
+            } else if (element instanceof RuleCall) {
+                // rule
+                RuleCall rulecall = (RuleCall) element;
                 AbstractRule called = rulecall.getRule();
+
                 if (called instanceof TerminalRule) {
-                    // terminals
-                    TerminalRule t = (TerminalRule) called;
-                    String name = t.getName();
-                    int index = highlightNames.indexOf(name);
+                    // terminal
+                    TerminalRule terminalRule = (TerminalRule) called;
+                    String name = terminalRule.getName();
+                    int index = slotTerminals.indexOf(name);
+
                     if (index != -1) {
-                        // special terminal rules
-                        acceptor.addPosition(node.getOffset(), highlightLengths[index],
-                                ArdenSyntaxHighlightingConfiguration.KEYWORD_ID);
-                        // also highlight the ";;" part
-                        acceptor.addPosition(node.getTotalEndOffset()-2, 2,
-                                ArdenSyntaxHighlightingConfiguration.KEYWORD_ID);
+                        // terminal for slots
+                        int labelLength = slotTerminalLabelLengths[index];
+                        highlightAsSlotTerminal(acceptor, node, labelLength);
                     }
                 }
             }
         }
+    }
+
+    private void highlightAsSlotTerminal(IHighlightedPositionAcceptor acceptor, ILeafNode node, int labelLength) {
+        // highlight "<highlightName>:"
+        acceptor.addPosition(node.getOffset(), labelLength,
+                ArdenSyntaxHighlightingConfiguration.KEYWORD_ID);
+        // highlight slot content
+        int textlength = node.getLength() - labelLength - 2;
+        acceptor.addPosition(node.getOffset() + labelLength, textlength,
+                ArdenSyntaxHighlightingConfiguration.TEXT_ID);
+        // highlight the ";;"
+        acceptor.addPosition(node.getTotalEndOffset() - 2, 2,
+                ArdenSyntaxHighlightingConfiguration.KEYWORD_ID);
+    }
+
+    private void highlightAsComment(ILeafNode node, IHighlightedPositionAcceptor acceptor) {
+        acceptor.addPosition(node.getOffset(), node.getLength(), ArdenSyntaxHighlightingConfiguration.COMMENT_ID);
+    }
+    
+    private void highlightAsKeyword(ILeafNode node, IHighlightedPositionAcceptor acceptor) {
+        acceptor.addPosition(node.getOffset(), node.getLength(), ArdenSyntaxHighlightingConfiguration.KEYWORD_ID);
+    }
+    
+    private void highlightAsText(ILeafNode node, IHighlightedPositionAcceptor acceptor) {
+        acceptor.addPosition(node.getOffset(), node.getLength(), ArdenSyntaxHighlightingConfiguration.TEXT_ID);
     }
    
 
