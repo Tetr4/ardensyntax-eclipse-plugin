@@ -8,15 +8,15 @@ import org.eclipse.xtext.AbstractRule;
 import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.RuleCall;
 import org.eclipse.xtext.TerminalRule;
+import org.eclipse.xtext.nodemodel.ILeafNode;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightedPositionAcceptor;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator;
 
-public class ArdenSyntaxSemanticHighlightingCalculator implements
-        ISemanticHighlightingCalculator {
+public class ArdenSyntaxSemanticHighlightingCalculator implements ISemanticHighlightingCalculator {
 
-    static List<String> highlightNames = Arrays.asList(new String[]{
+    private static List<String> highlightNames = Arrays.asList(new String[]{
             "TITLE_SLOT",
             "INSTITUTION_SLOT", 
             "AUTHOR_SLOT",
@@ -27,7 +27,7 @@ public class ArdenSyntaxSemanticHighlightingCalculator implements
             "CITATIONS_SLOT",
             "LINKS_SLOT"});
     
-    static int[] highlightLengths = new int[]{
+    private static int[] highlightLengths = new int[] {
             6,
             12,
             7,
@@ -36,37 +36,45 @@ public class ArdenSyntaxSemanticHighlightingCalculator implements
             12,
             9,
             10,
-            6
-    };
-    
+            6 };
+
     @Override
-    public void provideHighlightingFor(XtextResource resource,
-            IHighlightedPositionAcceptor acceptor) {
+    public void provideHighlightingFor(XtextResource resource, IHighlightedPositionAcceptor acceptor) {
         if (resource == null || resource.getParseResult() == null) {
+            // parser error
             return;
         }
 
         INode root = resource.getParseResult().getRootNode();
-        for (INode node : root.getAsTreeIterable()) {
+        
+        for (ILeafNode node : root.getLeafNodes()) {
             EObject current = node.getGrammarElement();
-            if (current instanceof Keyword) {
+            if (node.isHidden()) {
+                // comments
                 acceptor.addPosition(node.getOffset(), node.getLength(),
-                        ArdenSyntaxHighlightingConfiguration.DEFAULTHL);
+                  ArdenSyntaxHighlightingConfiguration.COMMENT_ID);
+            }
+            if (current instanceof Keyword) {
+                // keywords
+                acceptor.addPosition(node.getOffset(), node.getLength(),
+                        ArdenSyntaxHighlightingConfiguration.KEYWORD_ID);
             } else if (current instanceof RuleCall) {
+                // rules
                 RuleCall rulecall = (RuleCall) current;
                 AbstractRule called = rulecall.getRule();
                 if (called instanceof TerminalRule) {
+                    // terminals
                     TerminalRule t = (TerminalRule) called;
                     String name = t.getName();
                     int index = highlightNames.indexOf(name);
                     if (index != -1) {
-                        acceptor.addPosition(node.getOffset(), 
-                                highlightLengths[index], 
-                                ArdenSyntaxHighlightingConfiguration.DEFAULTHL);
+                        acceptor.addPosition(node.getOffset(), highlightLengths[index],
+                                ArdenSyntaxHighlightingConfiguration.KEYWORD_ID);
                     }
                 }
             }
         }
     }
+   
 
 }
