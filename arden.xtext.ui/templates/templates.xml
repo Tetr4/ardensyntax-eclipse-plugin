@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE templates>
+<templates>
+<template id="New Module" autoinsert="true" context="arden.xtext.ArdenSyntax.kw_maintenance:" deleted="false" description="Create a blank MLM" enabled="true" name="New Module">maintenance: 
+	title: ${My_Module} ;;
+	mlmname: ${myMLM};;
+	arden: version 2.5;;
+	version: 1.0;;
+	institution: ;;
+	author: ;;
+	specialist: ;;
+	date: 2012-09-05;;
+	validation: testing;;
+
+library: 
+	purpose: ;;
+	explanation: ;;
+	keywords: ;;
+	citations: ;;
+	links: ;;
+
+knowledge:
+	type: data-driven;;
+
+data:
+;;
+
+evoke: 
+;;
+
+logic: 
+;;
+
+action:
+;;
+
+end:
+</template>
+</templates>
