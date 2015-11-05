@@ -19,15 +19,15 @@ import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculato
 public class ArdenSyntaxSemanticHighlightingCalculator implements ISemanticHighlightingCalculator {
     
     private static List<String> slotTerminals = Arrays.asList(
-            "TITLE_SLOT",
-            "INSTITUTION_SLOT", 
-            "AUTHOR_SLOT",
-            "SPECIALIST_SLOT",
-            "PURPOSE_SLOT",
-            "EXPLANATION_SLOT",
-            "KEYWORDS_SLOT",
-            "CITATIONS_SLOT",
-            "LINKS_SLOT"
+            "TITLE_SLOT_TERMINAL",
+            "INSTITUTION_SLOT_TERMINAL", 
+            "AUTHOR_SLOT_TERMINAL",
+            "SPECIALIST_SLOT_TERMINAL",
+            "PURPOSE_SLOT_TERMINAL",
+            "EXPLANATION_SLOT_TERMINAL",
+            "KEYWORDS_SLOT_TERMINAL",
+            "CITATIONS_SLOT_TERMINAL",
+            "LINKS_SLOT_TERMINAL"
     );
     
     private static int[] slotTerminalLabelLengths = new int[] {

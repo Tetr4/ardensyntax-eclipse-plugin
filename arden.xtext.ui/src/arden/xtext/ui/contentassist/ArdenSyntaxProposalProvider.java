@@ -3,66 +3,45 @@
 */
 package arden.xtext.ui.contentassist;
 
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.RuleCall;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
+
 /**
  * see http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist on how to customize content assistant
  */
 public class ArdenSyntaxProposalProvider extends AbstractArdenSyntaxProposalProvider {
-
+    
+    // no content assist for keywords which are already handled by templates
+    private static Set<String> FILTERED_KEYWORDS = new HashSet<String>(Arrays.asList(
+            "mlmname:",
+            "filename:",
+            "arden:",
+            "version:",
+            "date:",
+            "validation:",
+            "type:",
+            "priority:",
+            "urgency:",
+            "data:",
+            "evoke:",
+            "logic:",
+            "action:",
+            "maintenance:",
+            "library:",
+            "knowledge:"
+    ));
+    
     @Override
-	public void complete_TITLE_SLOT(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.complete_TITLE_SLOT(model, ruleCall, context, acceptor);
-		acceptor.accept(createCompletionProposal("title: ;;", context));
-	}
-
-    @Override
-	public void complete_INSTITUTION_SLOT(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.complete_INSTITUTION_SLOT(model, ruleCall, context, acceptor);
-		acceptor.accept(createCompletionProposal("institution: ;;", context));
-	}
-
-    @Override
-	public void complete_AUTHOR_SLOT(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.complete_AUTHOR_SLOT(model, ruleCall, context, acceptor);
-		acceptor.accept(createCompletionProposal("author: ;;", context));
-	}
-	
-    @Override
-	public void complete_SPECIALIST_SLOT(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.complete_SPECIALIST_SLOT(model, ruleCall, context, acceptor);
-		acceptor.accept(createCompletionProposal("specialist: ;;", context));
-	}
-	
-    @Override
-	public void complete_PURPOSE_SLOT(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.complete_PURPOSE_SLOT(model, ruleCall, context, acceptor);
-		acceptor.accept(createCompletionProposal("purpose: ;;", context));
-	}
-	
-    @Override
-	public void complete_EXPLANATION_SLOT(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.complete_EXPLANATION_SLOT(model, ruleCall, context, acceptor);
-		acceptor.accept(createCompletionProposal("explanation: ;;", context));
-	}
-	
-    @Override
-	public void complete_KEYWORDS_SLOT(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.complete_KEYWORDS_SLOT(model, ruleCall, context, acceptor);
-		acceptor.accept(createCompletionProposal("keywords: ;;", context));
-	}
-	
-    @Override
-	public void complete_CITATIONS_SLOT(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.complete_CITATIONS_SLOT(model, ruleCall, context, acceptor);
-		acceptor.accept(createCompletionProposal("citations: ;;", context));
-	}
-	
-    @Override
-	public void complete_LINKS_SLOT(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.complete_LINKS_SLOT(model, ruleCall, context, acceptor);
-		acceptor.accept(createCompletionProposal("links: ;;", context));
-	}
+    public void completeKeyword(Keyword keyword, ContentAssistContext contentAssistContext, ICompletionProposalAcceptor acceptor) {
+        if (FILTERED_KEYWORDS.contains(keyword.getValue())) {
+            // don't propose keyword
+            return;
+        }
+        super.completeKeyword(keyword, contentAssistContext, acceptor);
+    }
 }
