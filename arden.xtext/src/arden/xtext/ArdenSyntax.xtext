@@ -90,13 +90,13 @@ maintenance_category:
                 'maintenance:' maintainance_body=maintenance_body;
 
 maintenance_body :
-                title_slot=TITLE_SLOT
+                title_slot=title_slot
                 mlmname_slot=mlmname_slot
-                arden_version_slot=arden_version_slot
+                arden_version_slot=arden_version_slot?
                 version_slot=version_slot
-                institution_slot=INSTITUTION_SLOT
-                author_slot=AUTHOR_SLOT
-                specialist_slot=SPECIALIST_SLOT
+                institution_slot=institution_slot
+                author_slot=author_slot
+                specialist_slot=specialist_slot
                 date_slot=date_slot
                 validation_slot=validation_slot;
 
@@ -104,11 +104,11 @@ library_category :
                 'library:' library_body=library_body;
 
 library_body :
-                purpose_slot=PURPOSE_SLOT
-                explanation_slot=EXPLANATION_SLOT
-                keywords_slot=KEYWORDS_SLOT
-                citations_slot=CITATIONS_SLOT?
-                links_slot=LINKS_SLOT?;
+                purpose_slot=purpose_slot
+                explanation_slot=explanation_slot
+                keywords_slot=keywords_slot
+                citations_slot=citations_slot?
+                links_slot=links_slot?;
 
 knowledge_category :
                 'knowledge:' knowledge_body=knowledge_body;
@@ -116,17 +116,17 @@ knowledge_category :
 knowledge_body :
                 type_slot=type_slot
                 data_slot=data_slot
-                priority_slot=priority_slot
+                priority_slot=priority_slot?
                 evoke_slot=evoke_slot
                 logic_slot=logic_slot
                 action_slot=action_slot
-                urgency_slot=urgency_slot;
+                urgency_slot=urgency_slot?;
                 
 
 /****** slots ******/
 /****** maintenance: slots ******/
-
-terminal TITLE_SLOT :
+title_slot: value=TITLE_SLOT_TERMINAL;
+terminal TITLE_SLOT_TERMINAL :
                 'title:' -> ';;';
 
 mlmname_slot :
@@ -135,23 +135,23 @@ mlmname_slot :
 
 
 arden_version_slot :
-	{arden_version_slot}
-      ('arden:' 'version' 
+      'arden:' 'version' 
       	version_number=NUMBER_LITERAL 
-      	';;'
-      )?;  
+      	';;';  
     
 version_slot :
                 'version:' vnum=NUMBER_LITERAL ';;';
 
-terminal INSTITUTION_SLOT :
+institution_slot: value=INSTITUTION_SLOT_TERMINAL;
+terminal INSTITUTION_SLOT_TERMINAL :
                 'institution:' -> ';;';
 
-terminal AUTHOR_SLOT :
+author_slot: value=AUTHOR_SLOT_TERMINAL;
+terminal AUTHOR_SLOT_TERMINAL :
                 'author:' -> ';;';
 
-
-terminal SPECIALIST_SLOT :
+specialist_slot: value=SPECIALIST_SLOT_TERMINAL;
+terminal SPECIALIST_SLOT_TERMINAL :
                 'specialist:' -> ';;';
 
 
@@ -175,17 +175,26 @@ validation_code :
 
 /****** library: slots ******/
 
-terminal PURPOSE_SLOT: 'purpose:' -> ';;';
-terminal EXPLANATION_SLOT: 'explanation:' -> ';;';
-terminal KEYWORDS_SLOT: 'keywords:' -> ';;';
-terminal CITATIONS_SLOT: 'citations:' -> ';;';
-terminal LINKS_SLOT: 'links:' -> ';;';
+purpose_slot: value=PURPOSE_SLOT_TERMINAL;
+terminal PURPOSE_SLOT_TERMINAL: 'purpose:' -> ';;';
+
+explanation_slot: value=EXPLANATION_SLOT_TERMINAL;
+terminal EXPLANATION_SLOT_TERMINAL: 'explanation:' -> ';;';
+
+keywords_slot: value=KEYWORDS_SLOT_TERMINAL;
+terminal KEYWORDS_SLOT_TERMINAL: 'keywords:' -> ';;';
+
+citations_slot: value=CITATIONS_SLOT_TERMINAL;
+terminal CITATIONS_SLOT_TERMINAL: 'citations:' -> ';;';
+
+links_slot: value=LINKS_SLOT_TERMINAL;
+terminal LINKS_SLOT_TERMINAL: 'links:' -> ';;';
 
 
 /****** knowledge: slots ******/
 
 type_slot :
-                'type:'
+                'type:' type=
                 	('data_driven'
     				| 'data-driven') 
                 ';;';
@@ -198,8 +207,7 @@ data_slot :
                 'data:' data_block=data_block ';;';
 
 priority_slot :
-      {priority_slot}
-    ('priority:' priority=NUMBER_LITERAL ';;')?;
+                'priority:' priority=NUMBER_LITERAL ';;';
 
 evoke_slot :
                 'evoke:' evoke_block=evoke_block ';;';
@@ -211,8 +219,7 @@ action_slot :
                 'action:' action_block=action_block ';;';
 
 urgency_slot :
-      {urgency_slot}
-    ('urgency:' urgency=urgency_val ';;')?;
+                'urgency:' urgency=urgency_val ';;';
 
 urgency_val :
       NUMBER_LITERAL
