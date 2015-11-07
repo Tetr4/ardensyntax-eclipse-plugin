@@ -7,55 +7,62 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.RuleCall;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
-
-import arden.xtext.ui.contentassist.AbstractArdenSyntaxProposalProvider;
 /**
  * see http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist on how to customize content assistant
  */
 public class ArdenSyntaxProposalProvider extends AbstractArdenSyntaxProposalProvider {
 
-	public void complete_title_slot(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.complete_title_slot(model, ruleCall, context, acceptor);
+    @Override
+	public void complete_TITLE_SLOT(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		super.complete_TITLE_SLOT(model, ruleCall, context, acceptor);
 		acceptor.accept(createCompletionProposal("title: ;;", context));
 	}
 
-	public void complete_institution_slot(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.complete_institution_slot(model, ruleCall, context, acceptor);
+    @Override
+	public void complete_INSTITUTION_SLOT(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		super.complete_INSTITUTION_SLOT(model, ruleCall, context, acceptor);
 		acceptor.accept(createCompletionProposal("institution: ;;", context));
 	}
 
-	public void complete_author_slot(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.complete_author_slot(model, ruleCall, context, acceptor);
+    @Override
+	public void complete_AUTHOR_SLOT(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		super.complete_AUTHOR_SLOT(model, ruleCall, context, acceptor);
 		acceptor.accept(createCompletionProposal("author: ;;", context));
 	}
 	
-	public void complete_specialist_slot(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.complete_specialist_slot(model, ruleCall, context, acceptor);
+    @Override
+	public void complete_SPECIALIST_SLOT(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		super.complete_SPECIALIST_SLOT(model, ruleCall, context, acceptor);
 		acceptor.accept(createCompletionProposal("specialist: ;;", context));
 	}
 	
-	public void complete_purpose_slot(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.complete_purpose_slot(model, ruleCall, context, acceptor);
+    @Override
+	public void complete_PURPOSE_SLOT(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		super.complete_PURPOSE_SLOT(model, ruleCall, context, acceptor);
 		acceptor.accept(createCompletionProposal("purpose: ;;", context));
 	}
 	
-	public void complete_explanation_slot(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.complete_explanation_slot(model, ruleCall, context, acceptor);
+    @Override
+	public void complete_EXPLANATION_SLOT(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		super.complete_EXPLANATION_SLOT(model, ruleCall, context, acceptor);
 		acceptor.accept(createCompletionProposal("explanation: ;;", context));
 	}
 	
-	public void complete_keywords_slot(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.complete_keywords_slot(model, ruleCall, context, acceptor);
+    @Override
+	public void complete_KEYWORDS_SLOT(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		super.complete_KEYWORDS_SLOT(model, ruleCall, context, acceptor);
 		acceptor.accept(createCompletionProposal("keywords: ;;", context));
 	}
 	
-	public void complete_citations_slot(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.complete_citations_slot(model, ruleCall, context, acceptor);
+    @Override
+	public void complete_CITATIONS_SLOT(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		super.complete_CITATIONS_SLOT(model, ruleCall, context, acceptor);
 		acceptor.accept(createCompletionProposal("citations: ;;", context));
 	}
 	
-	public void complete_links_slot(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.complete_links_slot(model, ruleCall, context, acceptor);
+    @Override
+	public void complete_LINKS_SLOT(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		super.complete_LINKS_SLOT(model, ruleCall, context, acceptor);
 		acceptor.accept(createCompletionProposal("links: ;;", context));
 	}
 }
