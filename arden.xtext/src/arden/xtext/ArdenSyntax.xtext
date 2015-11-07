@@ -75,6 +75,9 @@ terminal DATA_MAPPING :  '{' -> '}';
 mlmname_text: {mlmname_text} text=(ID|TRM_MLMNAME_TEXT);
 terminal TERM :  "'" -> "'";
 
+// rules used for cross references
+var_def: name=ID;
+
 
 /******** parser rules: ***********/
 P_mlm:
@@ -223,7 +226,7 @@ logic_statement :
       {logic_statement}
      (logic_assignment=logic_assignment
     | 'if' logic_if_then_else2=logic_if_then_else2
-    | 'for' id=ID 'in' for_expr=expr 'do' logic_block=logic_block ';' 'enddo'
+    | 'for' id=var_def 'in' for_expr=expr 'do' logic_block=logic_block ';' 'enddo'
     | 'while' while_expr=expr 'do' logic_block=logic_block ';' 'enddo'
     | 'conclude' conclude_expr=expr)?;
 
@@ -243,11 +246,11 @@ logic_assignment :
 
 identifier_becomes :
       id_or_obj_ref=identifier_or_object_ref ':='
-    | 'let' id=ID 'be'
+    | 'let' id=var_def 'be'
     | {identifier_becomes} 'now' ':=';
 
 identifier_or_object_ref :
-      id=ID ('.' id_or_obj_ref=identifier_or_object_ref)?;
+      id=var_def ('.' id_or_obj_ref=identifier_or_object_ref)?;
 
 time_becomes :
       'time' 'of'? id=ID ':='
@@ -381,7 +384,7 @@ expr_factor :
           
 
 expr_factor_atom :
-      id=ID
+      id=[var_def]
     | num=NUMBER_LITERAL
     | str=STRING_LITERAL
     | time=time_value
@@ -455,7 +458,7 @@ unary_comp_op :
     | 'string'
     | 'list'
     | 'object')
-    | id=ID;
+    | id=[var_def];
 
 binary_comp_op:
       'less' 'than'
@@ -602,7 +605,7 @@ data_statement :
     {data_statement}
     (assignment=data_assignment
     | 'if' data_if_then_else2=data_if_then_else2
-    | 'for' id=ID 'in' expr=expr 'do' data_block=data_block ';' 'enddo'
+    | 'for' id=var_def 'in' expr=expr 'do' data_block=data_block ';' 'enddo'
     | 'while' expr=expr 'do' data_block=data_block ';' 'enddo')?;
 
 data_if_then_else2 :
@@ -623,21 +626,21 @@ data_assignment :
     
     
 data_var_list :
-      id=ID (',' list=data_var_list)?;
+      id=var_def (',' list=data_var_list)?;
 
 data_assign_phrase :
-	  'read' ('as' id=ID)? read_phrase=read_phrase
+	  'read' ('as' id=var_def)? read_phrase=read_phrase
     | 'mlm' term=TERM ('from' 'institution' str=STRING_LITERAL)?
     | {data_assign_phrase} 'mlm' 'mlm_self'
     | 'interface' map=mapping_factor
     | 'event' map=mapping_factor
     | 'message' (
     	 map=mapping_factor
-    	| 'as' id=ID map=mapping_factor?
+    	| 'as' id=var_def map=mapping_factor?
     )
     | 'destination' (
     	 map=mapping_factor
-    	| 'as' id=ID map=mapping_factor?
+    	| 'as' id=var_def map=mapping_factor?
     )
     | obj='object' '[' obj_attr=object_attribute_list ']'
     | {data_assign_phrase} 'argument'
@@ -666,7 +669,8 @@ object_attribute_list :
     | id=ID ',' obj_attr=object_attribute_list;
 
 new_object_phrase :
-      'new' id=ID ('with' expr=expr)?;
+    // TODO should reference an obj_def
+      'new' id=[var_def] ('with' expr=expr)?;
     
     
 /****** evoke: block ******/
@@ -690,13 +694,13 @@ event_or :
 event_any :
     'any' 'of'? (
     	'(' list=event_list ')'
-    	|id=ID
+    	|id=var_def
     	)
     | factor=event_factor;
 
 event_factor :
       '(' event_or=event_or ')'
-    | id=ID;
+    | id=[var_def];
 
 
 evoke_time :
@@ -722,10 +726,10 @@ action_block :
 action_statement :
     {action_statement}
     ('if' action_if_then_else2=action_if_then_else2
-    | 'for' id=ID 'in' expr=expr 'do' action_block=action_block ';' 'enddo'
+    | 'for' id=var_def 'in' expr=expr 'do' action_block=action_block ';' 'enddo'
     | 'while' expr=expr 'do' action_block=action_block ';' 'enddo'
     | call_phrase=call_phrase ('delay' expr=expr)?
-    | 'write' expr=expr ('at' id=ID)?
+    | 'write' expr=expr ('at' target=[var_def])?
     | 'return' expr=expr
     | id_becomes=identifier_becomes (expr=expr | new_obj_phrase=new_object_phrase)
     | time=time_becomes expr=expr)?;
