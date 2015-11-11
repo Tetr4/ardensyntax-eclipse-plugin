@@ -3,9 +3,15 @@
  */
 package arden.xtext;
 
+import org.eclipse.xtext.parser.antlr.ISyntaxErrorMessageProvider;
+
+import arden.xtext.validation.ArdenSyntaxSyntaxErrorMessageProvider;
+
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
 public class ArdenSyntaxRuntimeModule extends arden.xtext.AbstractArdenSyntaxRuntimeModule {
-
+    public Class<? extends ISyntaxErrorMessageProvider> bindISyntaxErrorMessageProvider() {
+        return ArdenSyntaxSyntaxErrorMessageProvider.class;
+    }
 }
