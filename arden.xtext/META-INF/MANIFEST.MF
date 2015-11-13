@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Arden Syntax Plugin (xText-based)
 Bundle-Vendor: Arden2ByteCode.sf.net
-Bundle-Version: 1.0.3.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-SymbolicName: arden.xtext; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext;visibility:=reexport,
