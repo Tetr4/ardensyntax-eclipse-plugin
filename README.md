@@ -1,5 +1,3 @@
-# Arden Syntax Editor Update Site
+# Arden4Eclipse Update Site
 
-The purpose of this repository is to be included into the Arden2ByteCode
-Homepage Repository such that it can be uploaded to the web server via
-`git pull`.
+The purpose of this branch is to host the update-site of the Arden4Eclipse plugin via [Github Pages](https://pages.github.com/) at <https://plri.github.io/ardensyntax-eclipse-plugin/update/>.
