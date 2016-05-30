@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE templates>
+<templates>
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.kw_maintenance:" deleted="false" description="Create a blank MLM" enabled="true" id="New Module" name="New Module">maintenance: 
+    title: ${My_Module} ;;
+    mlmname: ${myMLM};;
+    arden: version 2.5;;
+    version: 1.0;;
+    institution: ${institution};;
+    author: ${user};;
+    specialist: ;;
+    date: 2012-09-05;;
+    validation: testing;;
+
+library: 
+    purpose: ${purpose};;
+    explanation: ${explanation};;
+    keywords: ${keywords};;
+    citations: ${citations};;
+    links: ${links};;
+
+knowledge:
+    type: data-driven;;
+
+    data:
+    ;;
+
+    evoke: 
+    ;;
+
+    logic: 
+    ;;
+
+    action:
+    ;;
+
+end:
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.kw_maintenance:" deleted="false" description="Add the maintenance category" enabled="true" id="Maintenance category" name="Maintenance category">maintenance: 
+    title: ${My_Module} ;;
+    mlmname: ${myMLM};;
+    arden: version 2.5;;
+    version: 1.0;;
+    institution: ${institution};;
+    author: ${user};;
+    specialist: ;;
+    date: 2012-09-05;;
+    validation: testing;;
+
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.kw_library:" deleted="false" description="Add the library category" enabled="true" id="Library category" name="Library category">library: 
+    purpose: ${purpose};;
+    explanation: ${explanation};;
+    keywords: ${keywords};;
+    citations: ${citations};;
+    links: ${links};;
+
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.kw_knowledge:" deleted="false" description="Add the knowledge category" enabled="true" id="Knowledge category" name="Knowledge category">knowledge:
+    type: data-driven;;
+
+    data:
+    ;;
+
+    evoke: 
+    ;;
+
+    logic: 
+    ;;
+
+    action:
+    ;;
+
+end:
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.title_slot" deleted="false" description="title slot" enabled="true" id="title" name="title">title: ${My_Module} ;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.mlmname_slot" deleted="false" description="mlmname slot" enabled="true" id="mlmname" name="mlmname">mlmname: ${myMLM};;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.mlmname_slot" deleted="false" description="filename slot" enabled="true" id="filename" name="filename">filename: ${filename};;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.arden_version_slot" deleted="false" description="arden version slot" enabled="true" id="arden version" name="arden version">arden: version ${version} ;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.version_slot" deleted="false" description="version slot" enabled="true" id="version" name="version">version: ${version} ;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.institution_slot" deleted="false" description="institution slot" enabled="true" id="institution" name="institution">institution: ${institution} ;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.author_slot" deleted="false" description="author slot" enabled="true" id="author" name="author">author: ${user} ;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.specialist_slot" deleted="false" description="specialist slot" enabled="true" id="specialist" name="specialist">specialist: ${specialist} ;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.date_slot" deleted="false" description="date slot" enabled="true" id="date" name="date">date: ${2015_6_23} ;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.validation_slot" deleted="false" description="validation slot" enabled="true" id="validation" name="validation">validation: ${testing} ;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.purpose_slot" deleted="false" description="purpose slot" enabled="true" id="purpose" name="purpose">purpose: ${purpose} ;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.explanation_slot" deleted="false" description="explanation slot" enabled="true" id="explanation" name="explanation">explanation: ${explanation} ;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.keywords_slot" deleted="false" description="keywords slot" enabled="true" id="keywords" name="keywords">keywords: ${keywords} ;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.citations_slot" deleted="false" description="citations slot" enabled="true" id="citations" name="citations">citations: ${citations} ;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.links_slot" deleted="false" description="links slot" enabled="true" id="links" name="links">links: ${links} ;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.type_slot" deleted="false" description="type slot" enabled="true" id="type" name="type">type: ${data_driven} ;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.data_slot" deleted="false" description="data slot" enabled="true" id="data" name="data">data: ${cursor}
+;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.evoke_slot" deleted="false" description="evoke slot" enabled="true" id="evoke" name="evoke">evoke: ${cursor}
+;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.logic_slot" deleted="false" description="logic slot" enabled="true" id="logic" name="logic">logic: ${cursor}
+;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.action_slot" deleted="false" description="action slot" enabled="true" id="action" name="action">action: ${cursor}
+;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.priority_slot" deleted="false" description="priority slot" enabled="true" id="priority" name="priority">priority: ${priority} ;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.urgency_slot" deleted="false" description="urgency slot" enabled="true" id="urgency" name="urgency">urgency: ${urgency} ;;
+</template>
+
+</templates>

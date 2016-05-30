@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<site>
-   <feature url="features/ArdenSyntaxEditor_1.1.0.qualifier.jar" id="ArdenSyntaxEditor" version="1.1.0.qualifier">
-      <category name="ArdenSyntaxTools"/>
-   </feature>
-   <category-def name="ArdenSyntaxTools" label="Arden Syntax Tools"/>
-</site>

@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Arden Syntax Xtext parser
+Bundle-Vendor: Arden2ByteCode Team
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: arden.plugin.editor; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtext,
+ org.eclipse.xtext.xbase,
+ org.eclipse.equinox.common;bundle-version="3.5.0",
+ org.eclipse.emf.common,
+ org.eclipse.emf.ecore,
+ org.eclipse.xtext.util,
+ org.antlr.runtime,
+ org.eclipse.xtext.xbase.lib
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: arden.plugin.editor.serializer,
+ arden.plugin.editor.scoping,
+ arden.plugin.editor.ardenSyntax.util,
+ arden.plugin.editor.ardenSyntax,
+ arden.plugin.editor.parser.antlr.internal,
+ arden.plugin.editor.services,
+ arden.plugin.editor.validation,
+ arden.plugin.editor.ardenSyntax.impl,
+ arden.plugin.editor.parser.antlr,
+ arden.plugin.editor
+Import-Package: org.apache.log4j

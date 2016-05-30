@@ -1,0 +1,4 @@
+/bin/
+/model/generated/
+*.xml_gen
+*-patch.jar

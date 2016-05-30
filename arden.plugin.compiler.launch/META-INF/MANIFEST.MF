@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Arden2ByteCode Launcher (run/debug)
+Bundle-SymbolicName: arden.plugin.compiler.launch;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: arden.plugin.compiler.launch.Activator
+Require-Bundle: arden.plugin.compiler,
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.jdt.launching,
+ org.eclipse.debug.core,
+ org.eclipse.jdt.core,
+ org.eclipse.debug.ui,
+ org.eclipse.ui.workbench,
+ org.eclipse.xtext.ui,
+ org.eclipse.ui.ide,
+ org.eclipse.core.expressions,
+ org.eclipse.jdt.debug
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Arden2ByteCode Team
