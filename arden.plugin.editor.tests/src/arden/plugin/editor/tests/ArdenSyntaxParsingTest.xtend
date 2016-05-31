@@ -3,28 +3,13 @@
  */
 package arden.plugin.editor.tests
 
-import arden.plugin.editor.ardenSyntax.mlms
-import com.google.inject.Inject
-import org.eclipse.xtext.junit4.InjectWith
-import org.eclipse.xtext.junit4.XtextRunner
-import org.eclipse.xtext.junit4.util.ParseHelper
-import org.junit.Assert
-import org.junit.Test
+import arden.plugin.editor.tests.specification.SpecificationTestSuite
 import org.junit.runner.RunWith
+import org.junit.runners.Suite
+import org.junit.runners.Suite.SuiteClasses
 
-@RunWith(XtextRunner)
-@InjectWith(ArdenSyntaxInjectorProvider)
-class ArdenSyntaxParsingTest{
-
-	@Inject
-	ParseHelper<mlms> parseHelper
-
-	@Test 
-	def void loadModel() {
-		val result = parseHelper.parse('''
-			Hello Xtext!
-		''')
-		Assert.assertNotNull(result)
-	}
-
+@RunWith(Suite)
+@SuiteClasses(SpecificationTestSuite)
+class ArdenSyntaxParsingTest {
+    // this file is regenerated when deleted, so delegate to the specification test suite for now
 }
