@@ -3,6 +3,12 @@
  */
 package arden.plugin.editor.validation;
 
+import org.eclipse.xtext.validation.Check;
+
+import arden.plugin.editor.ardenSyntax.ArdenSyntaxPackage;
+import arden.plugin.editor.ardenSyntax.priority_slot;
+import arden.plugin.editor.ardenSyntax.urgency_slot;
+
 /**
  * This class contains custom validation rules. 
  *
@@ -10,15 +16,30 @@ package arden.plugin.editor.validation;
  */
 public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 	
-//	public static final INVALID_NAME = 'invalidName'
-//
-//	@Check
-//	public void checkGreetingStartsWithCapital(Greeting greeting) {
-//		if (!Character.isUpperCase(greeting.getName().charAt(0))) {
-//			warning("Name should start with a capital",
-//					ArdenSyntaxPackage.Literals.GREETING__NAME,
-//					INVALID_NAME);
-//		}
-//	}
+	@Check
+	public void checkUrgencyRange(urgency_slot urgency_slot) {
+		String urgency = urgency_slot.getUrgency().getValue();
+		try {
+			double urgency_double = Double.valueOf(urgency);
+			if(urgency_double<1 || urgency_double>99) {
+				warning("Urgency should be between 1 and 99", ArdenSyntaxPackage.Literals.URGENCY_SLOT__URGENCY);
+			}
+		} catch (NumberFormatException e) {
+			// variable
+		}
+	}
+	
+	@Check
+	public void checkPriorityRange(priority_slot priority_slot) {
+		String priority = priority_slot.getPriority();
+		try {
+			double priority_double = Double.valueOf(priority);
+			if(priority_double<1 || priority_double>99) {
+				warning("Priority should be between 1 and 99", ArdenSyntaxPackage.Literals.PRIORITY_SLOT__PRIORITY);
+			}
+		} catch (NumberFormatException e) {
+			error("Priority must be a number", ArdenSyntaxPackage.Literals.PRIORITY_SLOT__PRIORITY);
+		}
+	}
 	
 }

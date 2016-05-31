@@ -46,7 +46,7 @@ Workflow {
             fragment = ecore.EMFGeneratorFragment2 {}
             
             fragment = serializer.SerializerFragment2 { generateStub = false }
-            fragment = validation.ValidatorFragment2 {}
+            fragment = validation.ValidatorFragment2 { generateStub = true }
             fragment = scoping.ImportNamespacesScopingFragment2 { ignoreCase = true }
             fragment = exporting.QualifiedNamesFragment2 {}
             fragment = builder.BuilderIntegrationFragment2 {}
