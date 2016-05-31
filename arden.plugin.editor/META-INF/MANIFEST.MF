@@ -12,7 +12,9 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.emf.ecore,
  org.eclipse.xtext.util,
  org.antlr.runtime,
- org.eclipse.xtext.xbase.lib
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtext.common.types,
+ org.objectweb.asm;bundle-version="[5.0.1,6.0.0)";resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: arden.plugin.editor.serializer,
  arden.plugin.editor.scoping,
@@ -23,5 +25,7 @@ Export-Package: arden.plugin.editor.serializer,
  arden.plugin.editor.validation,
  arden.plugin.editor.ardenSyntax.impl,
  arden.plugin.editor.parser.antlr,
- arden.plugin.editor
+ arden.plugin.editor,
+ arden.plugin.editor.formatting2,
+ arden.plugin.editor.parser.antlr.lexer
 Import-Package: org.apache.log4j

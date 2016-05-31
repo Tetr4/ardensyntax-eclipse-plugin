@@ -13,12 +13,14 @@ Require-Bundle: arden.plugin.editor,
  org.eclipse.ui.ide;bundle-version="3.5.0",
  org.eclipse.ui,
  org.eclipse.compare,
- org.eclipse.xtext.builder
+ org.eclipse.xtext.builder,
+ org.eclipse.xtext.common.types.ui
 Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: arden.plugin.editor.ui.contentassist,
  arden.plugin.editor.ide.contentassist.antlr,
  arden.plugin.editor.ide.contentassist.antlr.internal,
  arden.plugin.editor.ui.quickfix,
- arden.plugin.editor.ui.internal
+ arden.plugin.editor.ui.internal,
+ arden.plugin.editor.ide.contentassist.antlr.lexer
 Bundle-Activator: arden.plugin.editor.ui.internal.EditorActivator
