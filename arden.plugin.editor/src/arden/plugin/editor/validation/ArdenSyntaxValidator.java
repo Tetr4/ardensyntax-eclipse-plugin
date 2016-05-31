@@ -3,9 +3,12 @@
  */
 package arden.plugin.editor.validation;
 
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.validation.Check;
 
 import arden.plugin.editor.ardenSyntax.ArdenSyntaxPackage;
+import arden.plugin.editor.ardenSyntax.institution_slot;
+import arden.plugin.editor.ardenSyntax.mlmname_slot;
 import arden.plugin.editor.ardenSyntax.priority_slot;
 import arden.plugin.editor.ardenSyntax.urgency_slot;
 
@@ -41,5 +44,29 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 			error("Priority must be a number", ArdenSyntaxPackage.Literals.PRIORITY_SLOT__PRIORITY);
 		}
 	}
+	
+	@Check
+	public void checkInsitutionLength(institution_slot institution_slot) {
+		String institution = institution_slot.getInstitution();
+		if(institution.length() > 80) {
+			lengthWarning("Insitution", institution.length(), ArdenSyntaxPackage.Literals.INSTITUTION_SLOT__INSTITUTION);
+		}
+	}
+	
+	@Check
+	public void checkMlmnameLength(mlmname_slot mlmname_slot) {
+		String mlmname = mlmname_slot.getMlmname();
+		String filename = mlmname_slot.getFilename();
+		if(mlmname != null && mlmname.length() > 80) {
+			lengthWarning("Mlmname", mlmname.length(), ArdenSyntaxPackage.Literals.MLMNAME_SLOT__MLMNAME);
+		} else if (filename != null && filename.length() > 80) {
+			lengthWarning("Filename", filename.length(), ArdenSyntaxPackage.Literals.MLMNAME_SLOT__FILENAME);
+		}
+	}
+	
+	private void lengthWarning(String slotname, int length, EStructuralFeature feature) {
+		warning(slotname + " is " + length + " characters long, but should only be up to 80 characters in length.", feature);
+	}
+
 	
 }
