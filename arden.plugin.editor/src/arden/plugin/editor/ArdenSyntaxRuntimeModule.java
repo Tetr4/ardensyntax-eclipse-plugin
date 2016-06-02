@@ -3,8 +3,10 @@
  */
 package arden.plugin.editor;
 
+import org.eclipse.xtext.conversion.IValueConverterService;
 import org.eclipse.xtext.parser.antlr.ISyntaxErrorMessageProvider;
 
+import arden.plugin.editor.converter.ArdenSyntaxValueConverter;
 import arden.plugin.editor.validation.ArdenSyntaxSyntaxErrorMessageProvider;
 
 /**
@@ -13,5 +15,9 @@ import arden.plugin.editor.validation.ArdenSyntaxSyntaxErrorMessageProvider;
 public class ArdenSyntaxRuntimeModule extends AbstractArdenSyntaxRuntimeModule {
     public Class<? extends ISyntaxErrorMessageProvider> bindISyntaxErrorMessageProvider() {
         return ArdenSyntaxSyntaxErrorMessageProvider.class;
+    }
+    @Override
+    public Class<? extends IValueConverterService> bindIValueConverterService() {
+        return ArdenSyntaxValueConverter.class;
     }
 }

@@ -3,7 +3,6 @@
  */
 package arden.plugin.editor.validation;
 
-
 /**
  * This class contains custom validation rules. 
  *

@@ -1,6 +1,8 @@
-grammar arden.plugin.editor.ArdenSyntax hidden(WS, ML_COMMENT, SL_COMMENT)
+grammar arden.plugin.editor.ArdenSyntax hidden(WHITESPACE, ML_COMMENT, SL_COMMENT, THE)
 
 generate ardenSyntax "http://www.plugin.arden/editor/ArdenSyntax"
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
 /* 
  This xText Grammar is based on the EGADSS Arden Compiler Grammar 
@@ -22,406 +24,393 @@ generate ardenSyntax "http://www.plugin.arden/editor/ArdenSyntax"
  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 */
 
-import "http://www.eclipse.org/emf/2002/Ecore" as ecore
-
-/* mlms included by program */
-mlms:
-      (P_mlms+=P_mlm)+;
+/***** starting rule: file of individual MLMs *****/
+mlms: (mlms+=mlm)+;
      
      
-/************ terminals: ************/
-     
-// white space
-terminal WS: (' '|'\t'|'\r'|'\n')+;
+/************ terminals ************/
+// helper fragments as terminals are case sensitive (keywords are not)
+terminal fragment A: 'a'|'A';
+terminal fragment B: 'b'|'B';
+terminal fragment C: 'c'|'C';
+terminal fragment D: 'd'|'D';
+terminal fragment E: 'e'|'E';
+terminal fragment F: 'f'|'F';
+terminal fragment G: 'g'|'G';
+terminal fragment H: 'h'|'H';
+terminal fragment I: 'i'|'I';
+terminal fragment J: 'j'|'J';
+terminal fragment K: 'k'|'K';
+terminal fragment L: 'l'|'L';
+terminal fragment M: 'm'|'M';
+terminal fragment N: 'n'|'N';
+terminal fragment O: 'o'|'O';
+terminal fragment P: 'p'|'P';
+terminal fragment Q: 'q'|'Q';
+terminal fragment R: 'r'|'R';
+terminal fragment S: 's'|'S';
+terminal fragment T: 't'|'T';
+terminal fragment U: 'u'|'U';
+terminal fragment V: 'v'|'V';
+terminal fragment W: 'w'|'W';
+terminal fragment X: 'x'|'X';
+terminal fragment Y: 'y'|'Y';
+terminal fragment Z: 'z'|'Z';
 
-// comments
-terminal ML_COMMENT : '/*' -> '*/';
-terminal SL_COMMENT : '//' !('\n'|'\r')* ('\r'? '\n')?;
+// ignored (hidden) terminals
+terminal THE: T H E;
+terminal WHITESPACE: (' '|'\t'|'\r'|'\n')+;
+terminal ML_COMMENT: '/*' -> '*/';
+terminal SL_COMMENT: '//' !('\n'|'\r')* ('\r'? '\n')?;
 
-// some basic fragments
-terminal fragment CT : 'T';
+terminal STRING_LITERAL: '"' (!'"'| '""')* '"';
+
+// identifier 
 terminal fragment DIGIT: '0'..'9';
 terminal fragment LETTER: 'a'..'z' | 'A'..'Z';
-terminal fragment US: '_';
+terminal fragment UNDERSCORE: '_';
+terminal ID: LETTER (LETTER | UNDERSCORE | DIGIT)*;
+identifier: name=ID; // rule used for cross references
+attribute: name=ID;
 
-//terminal data_mapping: 'data_mapping';
+/*
+ * A catch all terminal for the <text>, <format_text> or <mlmname_text> rule would override most 
+ * other terminals. This is solved in SableCC by using parser states, but Xtext doesn't have 
+ * these. To fix this the terminals are matched via the keywords in their surrounding rules and 
+ * later their content is extracted via the ArdenSyntaxValueConverter.
+ * 
+ * Example:
+ * title_slot: value=TITLE_SLOT_TERMINAL;
+ * terminal TITLE_SLOT_TERMINAL: T I T L E ':' -> ';;';
+ */  
 
-// numbers
-terminal fragment DDIGITS: DIGIT+;
-terminal fragment EXPONENT: ('e' | 'E') ('+' | '-')? DDIGITS;
-terminal NUMBER_LITERAL : (DDIGITS ('.' DDIGITS?)? EXPONENT?) | ('.' DDIGITS EXPONENT?);
-
-// id & mlmname
-terminal ID : LETTER (LETTER | US | DIGIT)*;
-terminal TRM_MLMNAME_TEXT : LETTER (LETTER | DIGIT | US | '-' | '.')*;
-
-// strings
-terminal fragment SIMPLESTRING: !'"';
-terminal STRING_LITERAL : '"' SIMPLESTRING* ('""' SIMPLESTRING+)* '"';
-
+// number
+terminal fragment DIGITS: DIGIT+;
+terminal fragment SIGN: '+' | '-';
+terminal fragment EXPONENT: E SIGN? DIGITS;
+terminal NUMBER_LITERAL: DIGITS '.'? DIGITS? EXPONENT? | '.' DIGITS EXPONENT?; 
+    
 // iso date/datetime
-terminal fragment FRACTIONAL_SECONDS: ('.' DDIGITS)?;
-terminal fragment TIME_ZONE: ('Z' | 'z' 
-    | '+' DIGIT DIGIT ':' DIGIT DIGIT 
-    | '-' DIGIT DIGIT ':' DIGIT DIGIT)?
-;
-terminal ISO_DATE :  DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT;
-terminal ISO_DATE_TIME :  ISO_DATE CT DIGIT DIGIT ':' DIGIT DIGIT ':' DIGIT DIGIT FRACTIONAL_SECONDS TIME_ZONE;
+terminal fragment FRACTIONAL_SECONDS: '.' DIGITS;
+terminal fragment TIME_ZONE: Z | SIGN DIGIT DIGIT ':' DIGIT DIGIT;
+terminal ISO_DATE: DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT;
+terminal ISO_DATE_TIME: ISO_DATE T DIGIT DIGIT ':' DIGIT DIGIT ':' DIGIT DIGIT FRACTIONAL_SECONDS? TIME_ZONE?;    
 
-// from bracket to bracket
-terminal DATA_MAPPING :  '{' -> '}';
+terminal TERM:  "'" !(';;'|"'")* "'";
 
-// Xtext doesn't have states for terminals like sablecc. Therefore we need a helper rule to match multiple overlapping terminals
-mlmname_text: {mlmname_text} text=(ID|TRM_MLMNAME_TEXT);
-terminal TERM :  "'" -> "'";
+// replaces <mapping_factor>
+terminal DATA_MAPPING:  '{' !(';;'|'}')* '}';
 
-// rules used for cross references
-var_def: name=ID;
-
-
-/******** parser rules: ***********/
-P_mlm:
-                maintainance_category=maintenance_category
-                library_category=library_category
-                knowledge_category=knowledge_category
-                'end:';
+/******** categories ***********/
+mlm:
+    maintainance_category=maintenance_category
+    library_category=library_category
+    knowledge_category=knowledge_category
+    'end:';
                 
 maintenance_category:
-                'maintenance:' maintainance_body=maintenance_body;
+    'maintenance:' maintainance_body=maintenance_body;
 
-maintenance_body :
-                title_slot=title_slot
-                mlmname_slot=mlmname_slot
-                arden_version_slot=arden_version_slot?
-                version_slot=version_slot
-                institution_slot=institution_slot
-                author_slot=author_slot
-                specialist_slot=specialist_slot
-                date_slot=date_slot
-                validation_slot=validation_slot;
+maintenance_body:
+    title_slot=title_slot
+    mlmname_slot=mlmname_slot
+    arden_version_slot=arden_version_slot?
+    version_slot=version_slot
+    institution_slot=institution_slot
+    author_slot=author_slot
+    specialist_slot=specialist_slot
+    date_slot=date_slot
+    validation_slot=validation_slot;
 
-library_category :
-                'library:' library_body=library_body;
+library_category:
+    'library:' library_body=library_body;
 
-library_body :
-                purpose_slot=purpose_slot
-                explanation_slot=explanation_slot
-                keywords_slot=keywords_slot
-                citations_slot=citations_slot?
-                links_slot=links_slot?;
+library_body:
+    purpose_slot=purpose_slot
+    explanation_slot=explanation_slot
+    keywords_slot=keywords_slot
+    citations_slot=citations_slot?
+    links_slot=links_slot?;
 
-knowledge_category :
-                'knowledge:' knowledge_body=knowledge_body;
+knowledge_category:
+    'knowledge:' knowledge_body=knowledge_body;
 
-knowledge_body :
-                type_slot=type_slot
-                data_slot=data_slot
-                priority_slot=priority_slot?
-                evoke_slot=evoke_slot
-                logic_slot=logic_slot
-                action_slot=action_slot
-                urgency_slot=urgency_slot?;
+knowledge_body:
+    type_slot=type_slot
+    data_slot=data_slot
+    priority_slot=priority_slot?
+    evoke_slot=evoke_slot
+    logic_slot=logic_slot
+    action_slot=action_slot
+    urgency_slot=urgency_slot?;
                 
 
-/****** slots ******/
-/****** maintenance: slots ******/
-title_slot: value=TITLE_SLOT_TERMINAL;
-terminal TITLE_SLOT_TERMINAL :
-                'title:' -> ';;';
+/****** maintenance slots ******/
+terminal TITLE_TERMINAL: T I T L E ':' -> ';;';
+title_slot: title=TITLE_TERMINAL;
 
-mlmname_slot :
-      'mlmname:' mlmname_text=mlmname_text ';;'
-    | 'filename:' mlmname_text=mlmname_text ';;';
+// can't use the following as it would either collide with ID or attributes (containing a dot):
+// terminal MLMNAME_TEXT: LETTER (LETTER | DIGIT | '_' | '-' | '.')*;
+terminal MLMNAME_TERMINAL: M L M N A M E ':' -> ';;';
+terminal FILENAME_TERMINAL: F I L E N A M E ':' -> ';;';    
+mlmname_slot: mlmname=MLMNAME_TERMINAL | filename=FILENAME_TERMINAL;
 
-
-arden_version_slot :
-      'arden:' 'version' 
-        version_number=NUMBER_LITERAL 
-        ';;';  
+ // TODO check version while parsing or with validator?
+arden_version_slot: 'arden:' 'version' version=NUMBER_LITERAL ';;';
     
-version_slot :
-                'version:' vnum=NUMBER_LITERAL ';;';
+version_slot: {version_slot} 'version:' version=NUMBER_LITERAL? ';;';
 
-institution_slot: value=INSTITUTION_SLOT_TERMINAL;
-terminal INSTITUTION_SLOT_TERMINAL :
-                'institution:' -> ';;';
+terminal INSTITUTION_TERMINAL: I N S T I T U T I O N ':'->';;';
+institution_slot: institution=INSTITUTION_TERMINAL;
 
-author_slot: value=AUTHOR_SLOT_TERMINAL;
-terminal AUTHOR_SLOT_TERMINAL :
-                'author:' -> ';;';
+terminal AUTHOR_TERMINAL: A U T H O R ':' -> ';;';
+author_slot: author=AUTHOR_TERMINAL;
 
-specialist_slot: value=SPECIALIST_SLOT_TERMINAL;
-terminal SPECIALIST_SLOT_TERMINAL :
-                'specialist:' -> ';;';
+terminal SPECIALIST_TERMINAL: S P E C I A L I S T ':' -> ';;';
+specialist_slot: specialist=SPECIALIST_TERMINAL;
 
+date_slot: 'date:' date=mlm_date ';;';
+mlm_date: ISO_DATE | ISO_DATE_TIME;
 
-date_slot :
-                'date:' mlm_date=mlm_date ';;';
-
-mlm_date :
-      ISO_DATE
-    | ISO_DATE_TIME;
-
-validation_slot :
-                'validation:'
-                      vcode=validation_code
-                ';;';
-
-validation_code :
-      'production'
+validation_slot: 'validation:' validation=validation_code ';;';
+validation_code:
+    'production'
     | 'research'
     | 'testing'
     | 'expired';
 
-/****** library: slots ******/
 
-purpose_slot: value=PURPOSE_SLOT_TERMINAL;
-terminal PURPOSE_SLOT_TERMINAL: 'purpose:' -> ';;';
+/****** library slots ******/
+terminal PURPOSE_TERMINAL: P U R P O S E ':' -> ';;';
+purpose_slot: purpose=PURPOSE_TERMINAL;
 
-explanation_slot: value=EXPLANATION_SLOT_TERMINAL;
-terminal EXPLANATION_SLOT_TERMINAL: 'explanation:' -> ';;';
+terminal EXPLANATION_TERMINAL: E X P L A N A T I O N ':' -> ';;';
+explanation_slot: explanation=EXPLANATION_TERMINAL;
 
-keywords_slot: value=KEYWORDS_SLOT_TERMINAL;
-terminal KEYWORDS_SLOT_TERMINAL: 'keywords:' -> ';;';
+terminal KEYWORDS_TERMINAL: K E Y W O R D S':' -> ';;';
+keywords_slot: keywords=KEYWORDS_TERMINAL;
 
-citations_slot: value=CITATIONS_SLOT_TERMINAL;
-terminal CITATIONS_SLOT_TERMINAL: 'citations:' -> ';;';
+// TODO formated citations 
+terminal CITATIONS_TERMINAL: C I T A T I O N S ':' -> ';;';
+citations_slot: citations=CITATIONS_TERMINAL;
 
-links_slot: value=LINKS_SLOT_TERMINAL;
-terminal LINKS_SLOT_TERMINAL: 'links:' -> ';;';
+// TODO formated links 
+terminal LINKS_TERMINAL: L I N K S ':' -> ';;';
+links_slot: links=LINKS_TERMINAL;
 
 
 /****** knowledge: slots ******/
+type_slot: 'type:' type=type_code ';;';
+type_code:'data_driven' | 'data-driven';
 
-type_slot :
-                'type:' type=
-                    ('data_driven'
-                    | 'data-driven') 
-                ';;';
+data_slot: 'data:' data_block=data_block ';;';
 
-type_code :
-      ('data_driven'
-    | 'data-driven');
+priority_slot: 'priority:' priority=NUMBER_LITERAL ';;';
 
-data_slot :
-                'data:' data_block=data_block ';;';
+evoke_slot: 'evoke:' evoke_block=evoke_block ';;';
 
-priority_slot :
-                'priority:' priority=NUMBER_LITERAL ';;';
+logic_slot: 'logic:' logic_block=logic_block ';;';
 
-evoke_slot :
-                'evoke:' evoke_block=evoke_block ';;';
+action_slot: 'action:' action_block=action_block ';;';
 
-logic_slot :
-                'logic:' logic_block=logic_block ';;';
-
-action_slot :
-                'action:' action_block=action_block ';;';
-
-urgency_slot :
-                'urgency:' urgency=urgency_val ';;';
-
-urgency_val :
-      NUMBER_LITERAL
-    | ID;
+urgency_slot: 'urgency:' urgency=urgency_val ';;';
+urgency_val:
+    {urgency_val} value=NUMBER_LITERAL
+    | id=[identifier];
     
 
-logic_block :
-      logic_statement=logic_statement (';' logic_block=logic_block)?;
+/****** logic block ******/
+logic_block:
+    statements+=logic_statement (';' statements+=logic_statement)*;
 
-logic_statement :
-      {logic_statement}
-     (logic_assignment=logic_assignment
-    | 'if' logic_if_then_else2=logic_if_then_else2
-    | 'for' id=var_def 'in' for_expr=expr 'do' logic_block=logic_block ';' 'enddo'
-    | 'while' while_expr=expr 'do' logic_block=logic_block ';' 'enddo'
-    | 'conclude' conclude_expr=expr)?;
+logic_statement:
+    {logic_statement_empty}
+    | logic_assignment
+    | 'if' logic_if_then_else2
+    | {logic_for} 'for' loop_var=identifier 'in' iterable=expr 'do' block=logic_block ';' 'enddo'
+    | {logic_while} 'while' condition=expr 'do' block=logic_block ';' 'enddo'
+    | {conclude} 'conclude' condition=expr;
 
-logic_if_then_else2 :
-    if_expr=expr 'then' logic_block=logic_block ';' logic_elseif=logic_elseif;
+logic_if_then_else2:
+    condition=expr 'then' block=logic_block ';' elseif=logic_elseif;
 
-logic_elseif :
-      {logic_elseif} 'endif'
-    | 'else' logic_block=logic_block ';' 'endif'
-    | 'elseif' logic_if_then_else2=logic_if_then_else2;
+logic_elseif:
+    {endif} 'endif'
+    | {logic_else} 'else' block=logic_block ';' 'endif'
+    | 'elseif' logic_if_then_else2;
 
-logic_assignment :
-      id_becomes=identifier_becomes (assignment_expr=expr | assignment_call_phrase=call_phrase | assignment_new=new_object_phrase)
-    | time_becomes=time_becomes assignment_expr=expr 
-    | '(' list=data_var_list ')' ':=' assignment_call_phrase=call_phrase
-    | 'let' '(' list=data_var_list ')' 'be' assignment_call_phrase=call_phrase;
+logic_assignment:
+    {logic_identifier_assignment} id_becomes=identifier_becomes (expr=expr | call=call_phrase | new_object=new_object_phrase)
+    | {logic_time_assignment} time_becomes=time_becomes expr=expr
+    | {logic_list_assignment} '(' id_list=data_var_list ')' ':=' call=call_phrase
+    | {logic_list_assignment} 'let' '(' id_list=data_var_list ')' 'be' call=call_phrase;
 
-identifier_becomes :
-      id_or_obj_ref=identifier_or_object_ref ':='
-    | 'let' id=var_def 'be'
-    | {identifier_becomes} 'now' ':=';
+identifier_becomes:
+    id=identifier_or_object_ref ':='
+    | 'let' id=identifier 'be'
+    | now?='now' ':=';
 
-identifier_or_object_ref :
-      id=var_def ('.' id_or_obj_ref=identifier_or_object_ref)?;
+// requires at least on attribute or it would shadow the identifier rule
+identifier_or_object_ref:
+    id=identifier
+    | base_id=[identifier] ('.' attr+=[attribute])+;
 
-time_becomes :
-      'time' 'of'? id=ID ':='
-    | 'let' 'time' 'of'? id=ID 'be';
+time_becomes:
+    'time' 'of'? time_id=[identifier] ':='
+    | 'let' 'time' 'of'? time_id=[identifier] 'be';
 
-call_phrase :
-      'call' id=ID ('with' with_expr=expr)?;
+call_phrase:
+    'call' id=[identifier] ('with' args=expr)?;
     
     
 /****** expressions ******/
-
-expr :
-      expr_sort=expr_sort (',' expr_sort_b+=expr_sort)*
-    | ',' expr_sort=expr_sort (',' expr_sort_b+=expr_sort)*;
+expr:
+    expr_sort (','  expr_list+=expr_sort)*
+    | ',' expr_list+=expr_sort (',' expr_list+=expr_sort)*;
     
+// from specs: >"sort time x" should be parsed as "sort the list x by time" rather than 
+// as "extract the primary times from the list x and sort the list of times."<
+expr_sort:
+    expr_where ({expr_merge.left=current} 'merge' right=expr_sort)?
+    | 'sort' => option=sort_option? right=expr_sort;
+sort_option:
+    'time'
+    | 'data';
 
-expr_sort :
-      expr_where=expr_where ('merge' expr_sort=expr_sort)?
-    | 'sort' 'data'? expr_sort=expr_sort;
+expr_where:
+    expr_range ({expr_where.left=current} 'where' right=expr_range)?;
     
+expr_range:
+    expr_or ({expr_range.left=current} 'seqto' right=expr_or)?;
 
-expr_where :
-      expr_range=expr_range ('where' expr_range_where=expr_range)?;
+expr_or:
+    expr_and ({expr_or.left=current} 'or' right=expr_or)?;
     
-
-expr_range :
-      expr_or=expr_or ('seqto' expr_seqto=expr_or)?;
-
-
-expr_or :
-      expr_and=expr_and ('or' expr_or=expr_or)?;
+expr_and:
+    expr_not ({expr_and.left=current} 'and' right=expr_and)?;
     
+expr_not:
+    expr_comparison
+    | 'not' right=expr_comparison;
     
-expr_and :
-      expr_not=expr_not ('and' expr_and=expr_and)?;
+expr_comparison:
+    expr_find_string
+    | expr_string (
+        {expr_simple_comp.left=current} op=simple_comp_op right=expr_string
+        | {expr_is.left=current} is not?='not'? op=main_comp_op
+        | {expr_in.left=current} not?='not'? right=in_comp_op
+        | {expr_occur.left=current} occur not?='not'? op=temporal_comp_op // contains <range_comp_op>
+        | {expr_matches.left=current} 'matches' 'pattern' right=expr_string
+    )?;
     
-
-expr_not :
-      'not' expr_comparison=expr_comparison
-    | expr_comparison=expr_comparison;
-
-    
-expr_comparison :
-      expr_find_string=expr_find_string
-    | expr_string=expr_string 
-      (simple_comp_op right_string=expr_string
-      | P_is op=main_comp_op
-      | P_is 'not' op=main_comp_op
-      | op=in_comp_op
-      | 'not' op=in_comp_op
-      | P_occur temp_op=temporal_comp_op
-      | P_occur 'not' temp_op=temporal_comp_op
-      | 'matches' 'pattern' pattern_string=expr_string)?;
-    
-expr_find_string :
-      'find' substring=expr_string 'in'? 'string' fullstring=expr_string start=string_search_start?;
-    
-string_search_start :
-    'starting' 'at' expr_plus=expr_plus;
-
-
+expr_find_string:
+    'find' substring=expr_string 'in'? 'string' fullstring=expr_string start=string_search_start?;
+string_search_start:
+    'starting' 'at' expr_plus;
+        
+// string literal instead of <format_string>.
+// TODO check with validator
 expr_string:
-    expr_plus=expr_plus 
-        ('||' expr_plus_b+=expr_plus 
-            | 'formatted' 'with' str_literal+=STRING_LITERAL
-        )*
-    | 'trim' opt=trim_option? expr_plus=expr_plus 
-        ('||' expr_plus_b+=expr_plus | 
-            'formatted' 'with' str_literal+=STRING_LITERAL
-        )*
-    | 'substring' charcount=expr_plus 'characters' start=substring_start? 'from' expr_plus=expr_plus 
-        ('||' expr_plus_b+=expr_plus | 
-            'formatted' 'with' str_literal+=STRING_LITERAL
-        )*;
-    
-trim_option :
-      'left'
+    (
+        expr_plus
+        | {expr_trim} 'trim' option=trim_option? right=expr_string
+        | {expr_substring} 'substring' charcount=expr_plus 'characters' start=string_search_start? 'from' right=expr_string
+    )(
+        =>'||' concat_expr_list+=expr_plus
+        | =>'formatted' 'with' format_string_list+=STRING_LITERAL
+    )*;
+trim_option:
+    'left'
     | 'right';
 
-substring_start :
-    'starting' 'at' start=expr_factor;
-  
+expr_plus:
+    expr_addition
+    | {expr_pos} '+' right=expr_addition
+    | {expr_neg} '-' right=expr_addition;
 
-expr_plus :
-      expr_times=expr_times 
-            ('+' expr_times_b+=expr_times
-            | '-' expr_times_b+=expr_times)*
-    | '+' expr_times=expr_times 
-            ('+' expr_times_b+=expr_times
-            | '-' expr_times_b+=expr_times)*
-    | '-' expr_times=expr_times 
-            ('+' expr_times_b+=expr_times
-            | '-' expr_times_b+=expr_times)*;
+// helper to solve left recursion
+expr_addition:
+    expr_times (
+        {expr_addition.left=current} '+' right=expr_addition 
+        | {expr_subtraction.left=current} '-' right=expr_addition
+    )?;    
     
-    
-expr_times :
-      expr_power=expr_power 
-            ('*' expr_power_b+=expr_power
-                | '/' expr_power_b+=expr_power)*;
-    
-    
-expr_power :
-    base=expr_function ((=> '**' exp=expr_function) | 
-        (op1=duration_op 
-            ((=> ('before'|'after'|'from') expr_function=expr_function (=> op2=duration_op 'ago'?)?)
-                | 'ago'?
-            )
-        )?
-    );
-    
+expr_times:
+    expr_power (
+        {expr_times.left=current} '*' right=expr_times
+        | {expr_div.left=current} '/' right=expr_times
+    )?;
 
-expr_function :
-      expr_factor=expr_factor (=> 'as' as_func_op=as_func_op)?
-    | => op=of_func_op 'of'? expr_function=expr_function
-    |   => ( from_of_func_op=from_of_func_op 
-        | index_of=index_from_of_func_op )
-        ('of'? expr_function=expr_function 
-            | => expr_factor=expr_factor 'from' expr_function=expr_function
-        )
-    |   =>( from_func_op=from_func_op 
-        | index=index_from_func_op
-      ) expr_factor=expr_factor => 'from' expr_function=expr_function     
-    | => 'attribute' expr_factor=expr_factor 'from' expr_function=expr_function;
+// contains a merge of <expr_before>, <expr_ago> and <expr_duration> to solve ambiguity
+expr_power:
+    expr_function (
+        {expr_power.left=current} '**' right=expr_function
+        | {expr_duration.left=current} unit=duration_op ( 
+            => option=('before'|'after'|'from') right=expr_function unit_right=duration_op? ago?='ago'?
+            | ago?='ago'?
+        ) 
+    )?;
+    
+expr_function:
+    expr_factor ({expr_as.left=current} 'as' op=as_func_op)?
+    | op=of_func_op {expr_of.left=current} 'of'? right=expr_function
+    | (
+        op=from_of_func_op {expr_function.left=current}
+        | op=index_from_of_func_op {expr_index_function.left=current}
+    )(
+        'of'? right=expr_function
+        | => limit=expr_factor 'from' right=expr_function
+    )
+    | (
+        op=from_func_op {expr_function.left=current}
+        | op=index_from_func_op {expr_index_function.left=current}
+    ) limit=expr_factor 'from' right=expr_function
+    | expr_attribute_from;
             
-            
-expr_factor :
-    atom=expr_factor_atom 
-    ((=> '.' id+=ID)* 
-        | (=> '[' expr=expr ']' ('.' id+=ID)*)
-    );
-          
+expr_attribute_from:
+    'attribute' attr=expr_factor 'from' right=expr_factor;
 
-expr_factor_atom :
-      id=[var_def]
-    | num=NUMBER_LITERAL
-    | str=STRING_LITERAL
-    | time=time_value
-    | bool=boolean_value
-    | {expr_factor_atom}'null'
-    | it=P_it
+expr_factor:
+    expr_array_access ({expr_attr_access.left=current} =>'.' attribute_list+=[attribute])*;
+    
+// helper for better AST elements
+expr_array_access:
+    expr_factor_atom ({expr_array_access.left=current} => '[' index=expr ']')?;
+
+expr_factor_atom:
+    {identifier_use} id=[identifier]
+    | {number_literal} value=NUMBER_LITERAL
+    | {string_literal} value=STRING_LITERAL
+    | {time_constant} value=time_value
+    | {bool} value=boolean_value
+    | {null_}'null'
+    | {it} it
                   /* Value is NULL outside of a where   */
                   /* clause and may be flagged as an    */
                   /* error in some implementations.     */
-    | {expr_factor_atom} => '(' (expr=expr)? ')';
+    | {brackets} '(' right=expr? ')';
     
     
-P_it :
-      'it'
+/****** synonyms ******/    
+it:
+    'it'
     | 'they';
     
-P_is :
-      'is'
+is:
+    'is'
     | 'are'
     | 'was'
     | 'were';
 
-P_occur :
-      'occur'
+occur:
+    'occur'
     | 'occurs'
     | 'occurred';
     
     
-simple_comp_op :
-      '='
+/****** operators ******/
+simple_comp_op:
+    '='
     | 'eq'
     | '<'
     | 'lt'
@@ -434,56 +423,55 @@ simple_comp_op :
     | '<>'
     | 'ne';
 
-main_comp_op :
-      temporal_comp_op=temporal_comp_op
-    | unary_comp_op=unary_comp_op
-    | binary_comp_op=binary_comp_op str=expr_string
-    | in_comp_op=in_comp_op;
+main_comp_op:
+    temporal_comp_op
+    | unary_comp_op
+    | binary_comp_op right=expr_string;
     
+// contains <range_comp_op>
+temporal_comp_op:
+    {within} 'within' (
+        op='past'
+        | 'same' op='day' 'as'
+        | time_range=expr_string op=('preceding'|'following'|'surrounding'|'to')
+    ) right=expr_string
+    | {before} 'before' right=expr_string
+    | {after} 'after' right=expr_string
+    | {time_eq} 'equal' right=expr_string
+    | {at} 'at' right=expr_string;
 
-temporal_comp_op :
-      'within'
-            ( 'past' past=expr_string
-            | 'same' 'day' 'as' day=expr_string 
-            | within=expr_string ('preceding' preceding=expr_string
-                | 'following' following=expr_string
-                | 'surrounding' surrounding=expr_string
-                | 'to' to=expr_string))
-    | 'before' before=expr_string
-    | 'after' after=expr_string
-    | 'equal' equal=expr_string
-    | 'at' at=expr_string;
-
-unary_comp_op :
-    {unary_comp_op}(
-      'present'
-    | 'null'
-    | 'boolean'
-    | 'number'
-    | 'time'
-    | 'duration'
-    | 'string'
-    | 'list'
-    | 'object')
-    | id=[var_def];
+unary_comp_op:
+    {unary_comp_op} op=(
+        'present'
+        | 'null'
+        | 'boolean'
+        | 'number'
+        | 'time'
+        | 'duration'
+        | 'string'
+        | 'list'
+        | 'object'
+    )
+    | id=[identifier];
 
 binary_comp_op:
-      'less' 'than'
-    | 'greater' 'than'
-    | 'greater' 'than' 'or' 'equal'
-    | 'less' 'than' 'or' 'equal';
+    {binary_comp_op} (
+        'less' 'than'
+        | 'greater' 'than'
+        | 'greater' 'than' 'or' 'equal'
+        | 'less' 'than' 'or' 'equal'
+        | 'in'
+     );
 
+in_comp_op:
+    'in' expr_string;
 
-in_comp_op :
-                'in' expr_string=expr_string;
-
-
-of_func_op :
-      of_read_func_op=of_read_func_op
-    | of_noread_func_op=of_noread_func_op;
+of_func_op:
+    of_read_func_op
+    | of_noread_func_op;
 
 of_read_func_op:
-      'average'
+    'average'
     | 'avg'
     | 'count'
     | 'exist'
@@ -491,8 +479,8 @@ of_read_func_op:
     | 'sum'
     | 'median';
 
-of_noread_func_op :
-      'any'
+of_noread_func_op:
+    'any'
     | 'all'
     | 'no'
     | 'slope'
@@ -540,15 +528,14 @@ of_noread_func_op :
     | 'clone'
     | 'extract' 'attribute' 'names';
     
-
-from_func_op :
+from_func_op:
     'nearest';
 
-index_from_func_op :
+index_from_func_op:
     'index' 'nearest';
 
-from_of_func_op :
-      'minimum'
+from_of_func_op:
+    'minimum'
     | 'min'
     | 'maximum'
     | 'max'
@@ -557,23 +544,21 @@ from_of_func_op :
     | 'earliest'
     | 'latest';
 
-/* must be careful as reverse 5 from x does */
-/* not make sense                           */
-index_from_of_func_op :
-      'index' 
-      (   'minimum'
+index_from_of_func_op:
+    'index' (
+        'minimum'
         | 'min'
         | 'maximum'
         | 'max'
         | 'earliest'
-        | 'latest');
-    
+        | 'latest'
+     );
 
-as_func_op :
+as_func_op:
     'number';
 
-duration_op :
-      'year'
+duration_op:
+    'year'
     | 'years'
     | 'month'
     | 'months'
@@ -590,11 +575,11 @@ duration_op :
     
     
 /****** factors ******/
-boolean_value :
-      'true'
+boolean_value:
+    'true'
     | 'false';
 
-time_value :
+time_value:
       'now'
     | ISO_DATE_TIME
     | ISO_DATE
@@ -605,147 +590,150 @@ time_value :
 
 
 /****** data block ******/
-data_block :
-    data_statement=data_statement (';' data_statement_b+=data_statement)*;
+data_block:
+    statements+=data_statement (';' statements+=data_statement)*;
     
-data_statement :
-    {data_statement}
-    (assignment=data_assignment
-    | 'if' data_if_then_else2=data_if_then_else2
-    | 'for' id=var_def 'in' expr=expr 'do' data_block=data_block ';' 'enddo'
-    | 'while' expr=expr 'do' data_block=data_block ';' 'enddo')?;
-
-data_if_then_else2 :
-    expr=expr 'then' data_block=data_block ';' else=data_elseif;
-
+data_statement:
+    {data_statement_empty}
+    | data_assignment
+    | 'if' data_if_then_else2
+    | {data_for} 'for' loop_var=identifier 'in' iterable=expr 'do' block=data_block ';' 'enddo'
+    | {data_while} 'while' condition=expr 'do' block=data_block ';' 'enddo'
+    | {include} 'include' id=[identifier];
     
-data_elseif :
-      {data_elseif} 'endif'
-    | 'else' data_block=data_block ';' 'endif'
-    | 'elseif' data_if_then_else2=data_if_then_else2;
-
-
-data_assignment :
-      becomes=identifier_becomes data_assign_phrase=data_assign_phrase
-    | becomes=time_becomes expr=expr
-    | =>'(' list=data_var_list ')' ':=' ('read' read_phrase=read_phrase | assign_arg='argument')
-    | =>'let' '(' list=data_var_list ')' 'be' ('read' read_phrase=read_phrase | assign_arg='argument');
+data_if_then_else2:
+    condition=expr 'then' block=data_block ';' elseif=data_elseif;
     
+data_elseif:
+    {endif} 'endif'
+    | {data_else} 'else' block=data_block ';' 'endif'
+    | 'elseif' data_if_then_else2;
     
-data_var_list :
-      id=var_def (',' list=data_var_list)?;
-
-data_assign_phrase :
-      'read' ('as' id=var_def)? read_phrase=read_phrase
-    | 'mlm' term=TERM ('from' 'institution' str=STRING_LITERAL)?
-    | {data_assign_phrase} 'mlm' 'mlm_self'
-    | 'interface' map=mapping_factor
-    | 'event' map=mapping_factor
-    | 'message' (
-         map=mapping_factor
-        | 'as' id=var_def map=mapping_factor?
+data_assignment:
+    {data_identifier_assignment} id_becomes=identifier_becomes (
+        phrase=data_assign_phrase
+        // missing in specs, but required for "read as" statement
+        | 'read' ('as' object_type=[identifier])? phrase=read_phrase
     )
-    | 'destination' (
-         map=mapping_factor
-        | 'as' id=var_def map=mapping_factor?
-    )
-    | obj='object' '[' obj_attr=object_attribute_list ']'
-    | {data_assign_phrase} 'argument'
-    | call_phrase=call_phrase
-    | new_phrase=new_object_phrase
-    | expr=expr;
+    | {data_time_assignment} time_becomes=time_becomes expr=expr
+    | {data_list_assignment} (
+        '(' id_list=data_var_list ')' ':='
+        | 'let' '(' id_list=data_var_list ')' 'be'
+    )(
+        'read' ('as' object_type=[identifier])? phrase=read_phrase
+        | argument?='argument'
+    );
     
+data_var_list:
+    id_list+=identifier (',' id_list+=identifier)*;
 
-read_phrase :
-      (of_read_func_op 'of'?)? read_where=read_where
-    | => from_of_func_op 
-         (=> ('of'? read_where=read_where) 
+data_assign_phrase:
+    // see <data_assignment> for "read as"
+    {mlm_phrase} 'mlm' (
+        term=TERM ('from' 'institution' institution=STRING_LITERAL)?
+        | 'mlm_self'
+    )
+    | {interface_phrase} 'interface' mapping=DATA_MAPPING
+    | {event_phrase} 'event' mapping=DATA_MAPPING
+    | {message_phrase} 'message' (
+         mapping=DATA_MAPPING
+        | 'as' object_type=[identifier] mapping=DATA_MAPPING?
+    )
+    | {destination_phrase} 'destination' (
+         mapping=DATA_MAPPING
+        | 'as' object_type=[identifier] mapping=DATA_MAPPING?
+    )
+    | {argument_phrase} 'argument'
+    | 'object' object_definition
+    | call_phrase
+    | new_object_phrase
+    | {expr_phrase} expr=expr;
+    
+read_phrase:
+    (op=of_read_func_op 'of'?)? read_where=read_where
+    | => op=from_of_func_op (
+        => ('of'? read_where=read_where)
         | expr_factor=expr_factor 'from' read_where=read_where
     );
 
-read_where :
-      map=mapping_factor ('where' P_it P_occur 'not'? temp_op=temporal_comp_op)?
-    | => '(' read_where=read_where ')';
+read_where:
+    {read_mapping} mapping=DATA_MAPPING
+    | {read_where} mapping=DATA_MAPPING 'where' it occur not?='not'? op=temporal_comp_op
+    | '(' read_where ')';
+    
+object_definition:
+    '[' attrs=object_attribute_list ']';
 
-mapping_factor:
-    {mapping_factor}
-    mapping=DATA_MAPPING;
-
-object_attribute_list :
-      id=ID
-    | id=ID ',' obj_attr=object_attribute_list;
-
-new_object_phrase :
-    // TODO should reference an obj_def
-      'new' id=[var_def] ('with' expr=expr)?;
+object_attribute_list:
+    attr_list+=attribute (',' attr_list+=attribute)*;
+  
+new_object_phrase:
+    'new' id=[identifier] ('with' fields=expr)?;
     
     
-/****** evoke: block ******/
-evoke_block :
-      evoke_statement=evoke_statement (';' evoke_statement_b+=evoke_statement)*; 
+/****** evoke block ******/
+evoke_block:
+    statements+=evoke_statement (';' statements+=evoke_statement)*; 
 
-evoke_statement :
-    {evoke_statement}
-    (event_or=event_or
-    | evoke_time=evoke_time
-    | qualified_evoke_cycle=qualified_evoke_cycle
-    | 'call')?; /* deprecated -- kept for backward compatibility */
+evoke_statement:
+    {evoke_statement_empty}
+    | {evoke_event} event=event_or
+    | evoke_time
+    | qualified_evoke_cycle
+    | {evoke_call} 'call'; /* deprecated -- kept for backward compatibility */
 
-event_list :
-      event_or=event_or (',' event_or_b+=event_or)*;
-
+event_list:
+    events+=event_or (',' events+=event_or)*;
     
-event_or :
-    event_any=event_any ('or' event_any_b+=event_any)*;
+event_or:
+    event_any ('or' event_list+=event_any)*;
     
-event_any :
+event_any:
     'any' 'of'? (
         '(' list=event_list ')'
-        |id=var_def
-        )
-    | factor=event_factor;
+        | event_id=[identifier]
+    )
+    | event_factor;
 
-event_factor :
-      '(' event_or=event_or ')'
-    | id=[var_def];
+event_factor:
+    '(' bracket_event=event_or ')'
+    | event_id=[identifier];
 
-
-evoke_time :
-      duration=evoke_duration 'after' time=evoke_time
-    | 'time' 'of'? event=event_any
+evoke_time:
+    {evoke_after} duration=evoke_duration 'after' time=evoke_time
+    | {evoke_time_of} 'time' 'of'? event=event_any
     | datetime=ISO_DATE_TIME
     | date=ISO_DATE;
     
-qualified_evoke_cycle :
-    evoke_cycle=simple_evoke_cycle ('until' expr=expr)?;
+qualified_evoke_cycle:
+    simple_evoke_cycle ('until' until=expr)?;
 
-simple_evoke_cycle :
-                'every' interval=evoke_duration 'for' duration=evoke_duration 'starting' start=evoke_time;
+simple_evoke_cycle:
+    'every' cycle_duration=evoke_duration 'for' duration=evoke_duration 'starting' start=evoke_time;
 
-evoke_duration :
-                num=NUMBER_LITERAL op=duration_op;
+evoke_duration:
+    count=NUMBER_LITERAL unit=duration_op;
                 
                 
-/****** action: block ******/
-action_block :
-      action_statement+=action_statement (';' action_statement+=action_statement)*;
+/****** action block ******/
+action_block:
+    statements+=action_statement (';' statements+=action_statement)*;
     
-action_statement :
-    {action_statement}
-    ('if' action_if_then_else2=action_if_then_else2
-    | 'for' id=var_def 'in' expr=expr 'do' action_block=action_block ';' 'enddo'
-    | 'while' expr=expr 'do' action_block=action_block ';' 'enddo'
-    | call_phrase=call_phrase ('delay' expr=expr)?
-    | 'write' expr=expr ('at' target=[var_def])?
-    | 'return' expr=expr
-    | id_becomes=identifier_becomes (expr=expr | new_obj_phrase=new_object_phrase)
-    | time=time_becomes expr=expr)?;
+action_statement:
+    {action_statement_empty}
+    | 'if' action_if_then_else2
+    | {action_for} 'for' loop_var=identifier 'in' iterable=expr 'do' block=action_block ';' 'enddo'
+    | {action_while} 'while' condition=expr 'do' block=action_block ';' 'enddo'
+    | {action_call} phrase=call_phrase ('delay' delay=expr)?
+    | {action_write} 'write' message=expr ('at' target=[identifier])?
+    | {action_return} 'return' return_value=expr
+    | time_becomes expr=expr
+    | {action_assignment} id_becomes=identifier_becomes (expr=expr | new_object=new_object_phrase);
 
 action_if_then_else2:
-                expr=expr 'then' action_block=action_block ';' action_elseif=action_elseif;
+                condition=expr 'then' block=action_block ';' elseif=action_elseif;
 
 action_elseif:
-    {action_elseif}
-      'endif'
-    | 'else' action_block=action_block ';' 'endif'
-    | 'elseif' action_if_then_else2=action_if_then_else2;
+    {endif} 'endif'
+    | {action_else} 'else' block=action_block ';' 'endif'
+    | 'elseif' action_if_then_else2;

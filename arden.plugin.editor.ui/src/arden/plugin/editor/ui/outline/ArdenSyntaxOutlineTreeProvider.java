@@ -6,7 +6,6 @@ package arden.plugin.editor.ui.outline;
 import org.eclipse.xtext.ui.editor.outline.IOutlineNode;
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
 
-import arden.plugin.editor.ardenSyntax.P_mlm;
 import arden.plugin.editor.ardenSyntax.action_slot;
 import arden.plugin.editor.ardenSyntax.data_slot;
 import arden.plugin.editor.ardenSyntax.evoke_slot;
@@ -15,6 +14,7 @@ import arden.plugin.editor.ardenSyntax.knowledge_category;
 import arden.plugin.editor.ardenSyntax.library_category;
 import arden.plugin.editor.ardenSyntax.logic_slot;
 import arden.plugin.editor.ardenSyntax.maintenance_category;
+import arden.plugin.editor.ardenSyntax.mlm;
 import arden.plugin.editor.ardenSyntax.mlms;
 
 /**
@@ -25,7 +25,7 @@ public class ArdenSyntaxOutlineTreeProvider extends DefaultOutlineTreeProvider {
 
     protected void _createChildren(IOutlineNode parentNode, mlms mlms) {
         // add child modules directly to file node
-        for (P_mlm node : mlms.getP_mlms()) {
+        for (mlm node : mlms.getMlms()) {
             createNode(parentNode, node);
         }
     }
