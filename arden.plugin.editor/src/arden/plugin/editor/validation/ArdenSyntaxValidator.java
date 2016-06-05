@@ -3,6 +3,10 @@
  */
 package arden.plugin.editor.validation;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.validation.Check;
 
@@ -45,10 +49,39 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 	}
 	
 	@Check
+	public void checkIdentifierName(identifier identifier) {
+		String name = identifier.getName();
+		
+		if(RESERVED_KEYWORDS.contains(name.toLowerCase())) {
+			error("<"+name+"> is reserved and may not be used as a variable name", ArdenSyntaxPackage.Literals.IDENTIFIER__NAME);
+		}
+	}
+	private static final Set<String> RESERVED_KEYWORDS = new HashSet<String>(Arrays.asList( "Abs", "action", "after", "ago", "alert", "all", "and", "any", "arccos", "arcsin",
+			"arctan", "arden", "are", "argument", "as", "at", "attribute", "author", "average", "avg", "be",
+			"before", "Boolean", "call", "ceiling", "characters", "citations", "conclude", "cos", "cosine", "count",
+			"clone", "currenttime", "data", "data_driven", "data-driven", "date", "day", "days", "decrease",
+			"delay", "destination", "do", "duration", "earliest", "else", "elseif", "enddo", "endif", "end", "eq",
+			"equal", "event", "eventtime", "every", "evoke", "exist", "exists", "exp", "expired", "explanation",
+			"extract", "false", "filename", "find", "first", "floor", "following", "for", "formatted", "from", "ge",
+			"greater", "gt", "hour", "hours", "if", "in", "include", "increase", "index", "institution", "int",
+			"interface", "interval", "is", "it", "keywords", "knowledge", "last", "latest", "le", "left", "length",
+			"less", "let", "library", "links", "list", "log", "log10", "logic", "lowercase", "lt", "maintenance",
+			"matches", "max", "maximum", "median", "merge", "message", "min", "minimum", "minute", "minutes", "mlm",
+			"mlmname", "mlm_self", "month", "months", "names", "ne", "nearest", "new", "no", "not", "now", "null",
+			"number", "object", "occur", "occurred", "occurs", "of", "or", "past", "pattern", "percent",
+			"preceding", "present", "priority", "production", "purpose", "read", "refute", "research", "return",
+			"reverse", "right", "round", "same", "second", "seconds", "seqto", "sin", "sine", "slope", "sort",
+			"specialist", "sqrt", "starting", "stddev", "string", "substring", "sum", "support", "surrounding",
+			"tan", "tangent", "testing", "than", "the", "then", "they", "time", "title", "to", "triggertime",
+			"trim", "true", "truncate", "type", "unique", "until", "uppercase", "urgency", "validation", "variance",
+			"version", "was", "week", "weeks", "were", "where", "while", "with", "within", "write", "year",
+			"years" ));
+	
+	@Check
 	public void checkIdentifierLength(identifier identifier) {
 		String name = identifier.getName();
 		if(name.length() > 80) {
-			lengthWarning("Identifier", name.length(), ArdenSyntaxPackage.Literals.INSTITUTION_SLOT__INSTITUTION);
+			lengthWarning("Identifier", name.length(), ArdenSyntaxPackage.Literals.IDENTIFIER__NAME);
 		}
 	}
 	
