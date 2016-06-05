@@ -10,12 +10,17 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.validation.Check;
 
 import arden.plugin.editor.ardenSyntax.ArdenSyntaxPackage;
+import arden.plugin.editor.ardenSyntax.data_identifier_assignment;
+import arden.plugin.editor.ardenSyntax.event_any;
+import arden.plugin.editor.ardenSyntax.event_phrase;
 import arden.plugin.editor.ardenSyntax.expr_string;
 import arden.plugin.editor.ardenSyntax.identifier;
+import arden.plugin.editor.ardenSyntax.identifier_or_object_ref;
 import arden.plugin.editor.ardenSyntax.institution_slot;
 import arden.plugin.editor.ardenSyntax.mlmname_slot;
 import arden.plugin.editor.ardenSyntax.priority_slot;
@@ -49,6 +54,26 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 			}
 		} catch (NumberFormatException e) {
 			error("Priority must be a number", ArdenSyntaxPackage.Literals.PRIORITY_SLOT__PRIORITY);
+		}
+	}
+	
+	@Check
+	public void checkInvalidEventVariable(event_any event_any) {
+		identifier event_id = event_any.getEvent_id();
+		if(event_id == null) return;
+		
+		// check if assignment has an event_phrase
+		EObject parent = event_id.eContainer();
+		if(parent instanceof identifier_or_object_ref) {
+			parent = parent.eContainer();
+		}
+		parent = parent.eContainer();
+		if(parent instanceof data_identifier_assignment) {
+			data_identifier_assignment assignment = (data_identifier_assignment) parent;
+			
+			if(!(assignment.getPhrase() instanceof event_phrase)) {
+				warning("Only event variables can be evoked", ArdenSyntaxPackage.Literals.EVENT_ANY__EVENT_ID);
+			}
 		}
 	}
 	
