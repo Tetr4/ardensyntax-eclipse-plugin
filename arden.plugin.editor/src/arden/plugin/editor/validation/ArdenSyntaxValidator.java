@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.validation.Check;
 
 import arden.plugin.editor.ardenSyntax.ArdenSyntaxPackage;
+import arden.plugin.editor.ardenSyntax.identifier;
 import arden.plugin.editor.ardenSyntax.institution_slot;
 import arden.plugin.editor.ardenSyntax.mlmname_slot;
 import arden.plugin.editor.ardenSyntax.priority_slot;
@@ -22,13 +23,11 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 	@Check
 	public void checkUrgencyRange(urgency_slot urgency_slot) {
 		String urgency = urgency_slot.getUrgency().getValue();
-		try {
+		if(urgency != null) {
 			double urgency_double = Double.valueOf(urgency);
 			if(urgency_double<1 || urgency_double>99) {
 				warning("Urgency should be between 1 and 99", ArdenSyntaxPackage.Literals.URGENCY_SLOT__URGENCY);
 			}
-		} catch (NumberFormatException e) {
-			// variable
 		}
 	}
 	
@@ -42,6 +41,14 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 			}
 		} catch (NumberFormatException e) {
 			error("Priority must be a number", ArdenSyntaxPackage.Literals.PRIORITY_SLOT__PRIORITY);
+		}
+	}
+	
+	@Check
+	public void checkIdentifierLength(identifier identifier) {
+		String name = identifier.getName();
+		if(name.length() > 80) {
+			lengthWarning("Identifier", name.length(), ArdenSyntaxPackage.Literals.INSTITUTION_SLOT__INSTITUTION);
 		}
 	}
 	
@@ -68,5 +75,4 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 		warning(slotname + " is " + length + " characters long, but should only be up to 80 characters in length.", feature);
 	}
 
-	
 }
