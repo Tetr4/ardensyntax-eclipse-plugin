@@ -1,7 +1,10 @@
 package arden.plugin.editor.tests.specification.testcompiler.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.xtext.diagnostics.Diagnostic;
+import org.eclipse.xtext.diagnostics.Severity;
 import org.eclipse.xtext.junit4.InjectWith;
 import org.eclipse.xtext.junit4.util.ParseHelper;
 import org.eclipse.xtext.junit4.validation.ValidationTestHelper;
@@ -54,9 +57,17 @@ public class TestCompilerPluginImpl implements TestCompiler {
 			mlms ast = parseHelper.parse(code);
 			List<Issue> issues = validationHelper.validate(ast);
 			
-			if (!issues.isEmpty()) {
+			List<Issue> severeIssues = new ArrayList<>();
+			for(Issue issue:issues) {
+				if(issue.getSeverity() == Severity.WARNING && issue.getCode().equals(Diagnostic.LINKING_DIAGNOSTIC)) {
+					// skip warnings for unresolved variables			
+				} else {
+					severeIssues.add(issue);
+				}
+			}
+			if (!severeIssues.isEmpty()) {
 				StringBuilder issuesBuilder = new StringBuilder();
-				for (Issue issue : issues) {
+				for (Issue issue : severeIssues) {
 					issuesBuilder.append(issue.toString());
 					issuesBuilder.append('\n');
 				}
