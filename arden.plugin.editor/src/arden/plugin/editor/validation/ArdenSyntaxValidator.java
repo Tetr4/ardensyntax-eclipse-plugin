@@ -5,12 +5,16 @@ package arden.plugin.editor.validation;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.validation.Check;
 
 import arden.plugin.editor.ardenSyntax.ArdenSyntaxPackage;
+import arden.plugin.editor.ardenSyntax.expr_string;
 import arden.plugin.editor.ardenSyntax.identifier;
 import arden.plugin.editor.ardenSyntax.institution_slot;
 import arden.plugin.editor.ardenSyntax.mlmname_slot;
@@ -47,6 +51,23 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 			error("Priority must be a number", ArdenSyntaxPackage.Literals.PRIORITY_SLOT__PRIORITY);
 		}
 	}
+	
+	@Check
+	public void checkFormattedWithSpecification(expr_string expr_string) {
+		for (String format_string: expr_string.getFormat_string_list()) {
+			Matcher matcher = FORMAT_SPECIFIER.matcher(format_string);
+			while(matcher.find()) {
+				char type = matcher.group(1).charAt(0);
+				if(!VALID_FORMAT_TYPES.contains(type)) {
+					warning("The format type <" + type +"> is not supported", ArdenSyntaxPackage.Literals.EXPR_STRING__FORMAT_STRING_LIST);
+					continue;
+				}
+			}
+		}
+	}
+	private static final Pattern FORMAT_SPECIFIER = Pattern.compile("%[0+ \\#-]?[+-]?[0-9.*]*([a-zA-Z])");
+	private static final List<Character> VALID_FORMAT_TYPES = Arrays.asList('c', 'C', 'd', 'I', 'o', 'u', 'x', 'X', 'e',
+			'E', 'f', 'g', 'G', 's', 't'); // valid but unsupported: 'n', 'p'
 	
 	@Check
 	public void checkIdentifierName(identifier identifier) {
