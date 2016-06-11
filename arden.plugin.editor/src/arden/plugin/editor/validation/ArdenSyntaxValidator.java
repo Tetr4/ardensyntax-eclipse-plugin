@@ -13,15 +13,21 @@ import java.util.regex.Pattern;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.validation.Check;
+import org.eclipse.xtext.validation.CheckType;
 
 import arden.plugin.editor.ardenSyntax.ArdenSyntaxPackage;
+import arden.plugin.editor.ardenSyntax.action_for;
+import arden.plugin.editor.ardenSyntax.data_for;
 import arden.plugin.editor.ardenSyntax.data_identifier_assignment;
+import arden.plugin.editor.ardenSyntax.data_var_list;
 import arden.plugin.editor.ardenSyntax.event_any;
 import arden.plugin.editor.ardenSyntax.event_phrase;
 import arden.plugin.editor.ardenSyntax.expr_string;
 import arden.plugin.editor.ardenSyntax.identifier;
+import arden.plugin.editor.ardenSyntax.identifier_becomes;
 import arden.plugin.editor.ardenSyntax.identifier_or_object_ref;
 import arden.plugin.editor.ardenSyntax.institution_slot;
+import arden.plugin.editor.ardenSyntax.logic_for;
 import arden.plugin.editor.ardenSyntax.mlmname_slot;
 import arden.plugin.editor.ardenSyntax.priority_slot;
 import arden.plugin.editor.ardenSyntax.urgency_slot;
@@ -73,7 +79,7 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 	}
 	private static final Pattern MLMNAME_TEXT = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_.-]*$");
 	
-	@Check
+	@Check(CheckType.NORMAL)
 	public void checkInvalidEventVariable(event_any event_any) {
 		identifier event_id = event_any.getEvent_id();
 		if(event_id == null) return;
@@ -90,6 +96,51 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 			if(!(assignment.getPhrase() instanceof event_phrase)) {
 				warning("Only event variables can be evoked", ArdenSyntaxPackage.Literals.EVENT_ANY__EVENT_ID);
 			}
+		}
+	}
+	
+	@Check(CheckType.NORMAL)
+	public void checkLoopVariableReassignment(identifier_becomes id_becomes) {
+		checkLoopVariableReassignment(id_becomes, getSingleId(id_becomes));
+	}
+	
+	@Check(CheckType.NORMAL)
+	public void checkLoopVariableReassignment(data_var_list var_list) {
+		identifier[] identifiers = new identifier[var_list.getId_list().size()];
+		var_list.getId_list().toArray(identifiers);
+		checkLoopVariableReassignment(var_list, identifiers);
+	}
+	
+	private void checkLoopVariableReassignment(EObject parent, identifier... identifiers) {
+		while((parent = parent.eContainer()) != null) {
+			identifier loopVar = null;
+			if(parent instanceof logic_for) {
+				logic_for logic_for = (logic_for) parent;
+				loopVar = logic_for.getLoop_var();
+			} else if (parent instanceof data_for) {
+				data_for data_for = (data_for) parent;
+				loopVar = data_for.getLoop_var();
+			} else if (parent instanceof action_for) {
+				action_for action_for = (action_for) parent;
+				loopVar = action_for.getLoop_var();
+			}
+			if(loopVar != null) {
+				for(identifier identifier:identifiers) {
+					if(loopVar.getName().toLowerCase().equals(identifier.getName().toLowerCase())) {
+						error("The loop variable cannot be assigned to", identifier, ArdenSyntaxPackage.Literals.IDENTIFIER__NAME);
+					}
+				}
+			}
+		}
+	}
+	
+	private identifier getSingleId(identifier_becomes id_becomes) {
+		EObject idObject = id_becomes.getId();
+		if(idObject instanceof identifier_or_object_ref) {
+			identifier_or_object_ref identifier_or_object_ref = (identifier_or_object_ref) idObject;
+			return identifier_or_object_ref.getId();
+		} else {
+			return (identifier) idObject;
 		}
 	}
 	
