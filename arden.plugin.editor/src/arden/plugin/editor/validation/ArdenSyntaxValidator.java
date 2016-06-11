@@ -58,6 +58,22 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 	}
 	
 	@Check
+	public void checkMlmnameText(mlmname_slot mlmname_slot) {
+		String name = mlmname_slot.getMlmname();
+		String message_suffix = " should only contain letters, digits, underscores, dashs or dots.";
+		if(name != null) {
+			if(!MLMNAME_TEXT.matcher(name).matches()) {
+				warning("Mlmname" + message_suffix, ArdenSyntaxPackage.Literals.MLMNAME_SLOT__MLMNAME);
+			}
+		} else if((name = mlmname_slot.getFilename()) != null) {
+			if(!MLMNAME_TEXT.matcher(name).matches()) {
+				warning("Filename" + message_suffix, ArdenSyntaxPackage.Literals.MLMNAME_SLOT__FILENAME);
+			}			
+		}
+	}
+	private static final Pattern MLMNAME_TEXT = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_.-]*$");
+	
+	@Check
 	public void checkInvalidEventVariable(event_any event_any) {
 		identifier event_id = event_any.getEvent_id();
 		if(event_id == null) return;
