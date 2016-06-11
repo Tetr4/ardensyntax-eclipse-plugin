@@ -345,8 +345,8 @@ expr_times:
 expr_power:
     expr_function (
         {expr_power.left=current} '**' right=expr_function
-        | {expr_duration.left=current} unit=duration_op ( 
-            => option=('before'|'after'|'from') right=expr_function unit_right=duration_op? ago?='ago'?
+        | {expr_duration.left=current} unit=duration_op ( // solve ambiguity with 'from' in <expr_string>
+            (=>(option='from'|option='before'|option='after') right=expr_function) unit_right=duration_op? ago?='ago'?
             | ago?='ago'?
         ) 
     )?;
@@ -358,9 +358,14 @@ expr_function:
         op=from_of_func_op {expr_function.left=current}
         | op=index_from_of_func_op {expr_index_function.left=current}
     )(
-        'of'? right=expr_function
-        | => limit=expr_factor 'from' right=expr_function
-    )
+        /* 
+         * The LL-parser doesn't know whether to invoke the <expr_factor> or <expr_function> rule.
+         * Preferring a single rule via predicates (=>) leads to the other being being impossible.
+         * This is solved by enabling backtracking, as left factoring is not feasible for this rule.
+         * Examples matched by the rules: "MAXIMUM (1,2,3)" and "MAXIMUM 2 FROM (1,2,3)"
+         */  
+        (=>limit=expr_factor 'from' | 'of')?
+    ) right=expr_function
     | (
         op=from_func_op {expr_function.left=current}
         | op=index_from_func_op {expr_index_function.left=current}
