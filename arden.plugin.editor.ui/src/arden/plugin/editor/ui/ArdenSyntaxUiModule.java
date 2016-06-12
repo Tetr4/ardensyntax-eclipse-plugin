@@ -4,11 +4,13 @@
 package arden.plugin.editor.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.xtext.ui.editor.folding.IFoldingRegionProvider;
-import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration;
 import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator;
+import org.eclipse.xtext.ui.editor.folding.IFoldingRegionProvider;
+import org.eclipse.xtext.ui.editor.syntaxcoloring.AbstractAntlrTokenToAttributeIdMapper;
+import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration;
 
 import arden.plugin.editor.ui.folding.ArdenSyntaxFoldingRegionProvider;
+import arden.plugin.editor.ui.syntaxcoloring.ArdenSyntaxAntlrTokenToAttributeIdMapper;
 import arden.plugin.editor.ui.syntaxcoloring.ArdenSyntaxHighlightingConfiguration;
 import arden.plugin.editor.ui.syntaxcoloring.ArdenSyntaxSemanticHighlightingCalculator;
 
@@ -32,4 +34,9 @@ public class ArdenSyntaxUiModule extends AbstractArdenSyntaxUiModule {
     public Class<? extends IFoldingRegionProvider> bindIFoldingRegionProvider() {
         return ArdenSyntaxFoldingRegionProvider.class;
     }
+    
+    public Class<? extends AbstractAntlrTokenToAttributeIdMapper> bindAbstractAntlrTokenToAttributeIdMapper() {
+    	return ArdenSyntaxAntlrTokenToAttributeIdMapper.class ;
+    }
+    
 }
