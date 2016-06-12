@@ -82,19 +82,36 @@ attribute: name=ID;
  * Example:
  * title_slot: value=TITLE_SLOT_TERMINAL;
  * terminal TITLE_SLOT_TERMINAL: T I T L E ':' -> ';;';
- */  
-
-// number
-terminal fragment DIGITS: DIGIT+;
-terminal fragment SIGN: '+' | '-';
-terminal fragment EXPONENT: E SIGN? DIGITS;
-terminal NUMBER_LITERAL: DIGITS '.'? DIGITS? EXPONENT? | '.' DIGITS EXPONENT?; 
-    
+ */
+   
 // iso date/datetime
 terminal fragment FRACTIONAL_SECONDS: '.' DIGITS;
 terminal fragment TIME_ZONE: Z | SIGN DIGIT DIGIT ':' DIGIT DIGIT;
 terminal ISO_DATE: DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT;
 terminal ISO_DATE_TIME: ISO_DATE T DIGIT DIGIT ':' DIGIT DIGIT ':' DIGIT DIGIT FRACTIONAL_SECONDS? TIME_ZONE?;    
+
+// number
+terminal fragment DIGITS: DIGIT+;
+terminal fragment SIGN: '+' | '-';
+terminal fragment EXPONENT: E SIGN? DIGITS;
+terminal NUMBER_LITERAL:
+    DIGITS '.'? DIGITS? EXPONENT?
+    | '.' DIGITS EXPONENT?
+    /*
+     * The lexer is greedy and tries to invoke the ISO_DATE terminal rule as soon as it sees four digits and a "-". 
+     * This leads to an error when the subsequent characters don't fit the ISO_DATE terminal rule and 
+     * the lexer can't fall back to an alternative terminal rule.
+     * This is a simple fix, which offers an alternative terminal rule to fall back to. 
+     *  
+     * Examples:
+     * t := 2000-10-10; // a datetime
+     * t := 2000-10-100; // two subtractions
+     * t := 2000-10-1; // two subtractions
+     * t := 2000-1; // a subtraction
+     */
+    | DIGIT DIGIT DIGIT DIGIT '-' DIGIT+
+    | DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT 
+    | DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT DIGIT+; 
 
 terminal TERM:  "'" !(';;'|"'")* "'";
 
