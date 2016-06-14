@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Arden Syntax editor UI
+Bundle-Vendor: Arden2ByteCode Team
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: arden.plugin.editor.ui; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: arden.plugin.editor,
+ org.eclipse.xtext.ui,
+ org.eclipse.xtext.ui.shared,
+ org.eclipse.xtext.ui.codetemplates.ui,
+ org.eclipse.ui.editors;bundle-version="3.5.0",
+ org.eclipse.ui.ide;bundle-version="3.5.0",
+ org.eclipse.ui,
+ org.eclipse.compare,
+ org.eclipse.xtext.builder,
+ org.eclipse.xtext.common.types.ui
+Import-Package: org.apache.log4j
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: arden.plugin.editor.ui.contentassist,
+ arden.plugin.editor.ide.contentassist.antlr,
+ arden.plugin.editor.ide.contentassist.antlr.internal,
+ arden.plugin.editor.ui.quickfix,
+ arden.plugin.editor.ui.internal,
+ arden.plugin.editor.ide.contentassist.antlr.lexer
+Bundle-Activator: arden.plugin.editor.ui.internal.EditorActivator

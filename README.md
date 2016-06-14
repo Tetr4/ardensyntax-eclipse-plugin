@@ -1,60 +1,38 @@
-Arden Syntax Eclipse Editor
-===========================
+# Arden4Eclipse
+If you want to express your medical knowledge with [Arden Syntax](https://en.wikipedia.org/wiki/Arden_syntax) you can use Arden4Eclipse, an Arden Syntax Editor for the [Eclipse IDE](https://eclipse.org/). It integrates [Arden2ByteCode](https://github.com/PLRI/arden2bytecode) so Arden Syntax code can be easily written as well as executed.
 
-Overview
---------
+Arden4Eclipse is made with the [xText](https://www.eclipse.org/Xtext/) framework.
 
-This repository contains multiple Eclipse plugins which 
-together form the **Arden Syntax Editor** Eclipse feature.
-
-These are:
-
-* An Arden Syntax Editor plugin with syntax highlighting
-  consisting of:
-    * **arden.xtext** - The xText based Arden Syntax parser
-    * **arden.xtext.ui** - The Editor UI plugin using the parser
-      for syntax highlighting
-    * **arden.xtext.tests** - Optional tests which are not
-      included in the final plugin package
-* A plugin named **Arden2ByteCodeCompiler**, bundling the 
-  Arden2ByteCode program JAR to be used as a bundle in the 
-  Eclipse IDE
-* A plugin named **arden2bytecodeeclipseplugin**, containing
-  Classes that make the Run/Debug buttons of Eclipse work
-  with Medical Logic Modules.
-
-Further, there is a feature named **Arden Syntax Editor**
-bundling all of the above plugins and an update site, where
-the feature and all included plugins can be deployed to.  
-The update site is also imported into the website at 
-http://arden2bytecode.sf.net/ such that the plugin can be
-installed into running Eclipse installations via the
-update functionality of Eclipse.
-
-More information about the different Eclipse projects can be
-found in the README.md files of the respective 
-subdirectories. These are:
-
-* `eclipse-plugin\arden2bytecode-compiler\README.md`
-* `eclipse-plugin\arden2bytecode-plugin\README.md`
-* `eclipse-plugin\update-site\README.md`
+## Usage
+Check out <https://plri.github.io/arden2bytecode/arden4eclipse/> for installation instructions, features and screenshots.
 
 
-Build Instructions
-------------------
+## Project Structure
+This repository contains multiple Eclipse [plugin projects](http://help.eclipse.org/luna/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Fguide%2Farch.htm&cp=2_0_1) (plugin projects contain a `MANIFEST.MF` file).  
+Together they form two Eclipse [features](http://help.eclipse.org/luna/index.jsp?topic=%2Forg.eclipse.platform.doc.user%2Fconcepts%2Fconcepts-25.htm): An [Xtext](https://eclipse.org/Xtext/) based **editor** for syntax highlighting, content-assist, etc. and an **Arden2ByteCode integration**, so MLMs can be run via the run button in Eclipse.
 
-To build this bundle of plugins follow these steps:
+The projects contain the following:
 
-* Import all projects into an 
-  Eclipse IDE with xText Plugin installed, then generate the 
-  language artifacts of arden.xtext. 
-* For the arden2bytecode-compiler plugin, you need to place a 
-  compiled version of JewelCli 0.6 into the root directory of the 
-  project.  
-  Details are mentioned in:
-  `eclipse-plugin/arden2bytecode-compiler/README.md`
-* Finally build the plugins, the feature and the update site.
+    .
+    ├── arden.plugin.editor            # An xText based Arden Syntax parser and scoping/validation rules, etc.
+    ├── arden.plugin.editor.tests      # Tests for the parser
+    ├── arden.plugin.editor.ui         # The Eclipse editor UI and code for content-assist, code folding, outline, syntaxcoloring, etc.
+    ├── arden.plugin.editor.feature    # A feature which includes the above parser and editor plugins    
+    ├── arden.plugin.compiler          # A plugin wrapper for Arden2ByteCode
+    ├── arden.plugin.compiler.launch   # The launch configuration to run/debug MLMs in Eclipse
+    ├── arden.plugin.compiler.feature  # A feature which includes above compiler plugins
+    └── arden.plugin.update-site       # Allows the generation of an update-site, from which eclipse can download/update both features.
 
-For more details on building the distinct projects have a look
-at the README.md files in the respective project 
-subdirectories.
+## Building
+
+0. To build Arden4Eclipse you need to have an Eclipse installation with the following tools:
+  - [Eclipse PDE (Plug-in Development Environment)](https://marketplace.eclipse.org/content/eclipse-pde-plug-development-environment)
+  - [Xtext](https://marketplace.eclipse.org/content/xtext)
+  - [Eclipse Xtend](https://marketplace.eclipse.org/content/eclipse-xtend)
+  - Eclipse RCP Target Components (optional, includes sources/javadoc for the Eclipse API)
+0. Import all projects and then generate the parser and xtext language artifacts by right-clicking on [arden.plugin.editor/.../ArdenSyntax.xtext](arden.plugin.editor/src/arden/plugin/editor/ArdenSyntax.xtext) and selecting *Run As* &rArr; *Generate Xtext Artifacts*
+0. For the Arden2ByteCode integration, you need to place a `arden2bytecode.jar` into the [arden.plugin.compiler](arden.plugin.compiler) project. You can get the newest release [here](https://github.com/PLRI/arden2bytecode/releases/latest).
+
+To run Arden4Eclipse in a new Eclipse runtime: right-click on a project and select *Run As* &rArr; *Eclipse Application*
+
+To generate an update-site open [arden.plugin.update-site/site.xml](arden.plugin.update-site/site.xml) and click *Build All*.
