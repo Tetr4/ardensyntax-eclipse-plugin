@@ -11,7 +11,6 @@ import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
 
 import com.google.inject.Inject;
 
-import arden.plugin.editor.ardenSyntax.P_mlm;
 import arden.plugin.editor.ardenSyntax.action_slot;
 import arden.plugin.editor.ardenSyntax.data_slot;
 import arden.plugin.editor.ardenSyntax.evoke_slot;
@@ -19,7 +18,8 @@ import arden.plugin.editor.ardenSyntax.knowledge_category;
 import arden.plugin.editor.ardenSyntax.library_category;
 import arden.plugin.editor.ardenSyntax.logic_slot;
 import arden.plugin.editor.ardenSyntax.maintenance_category;
-import arden.plugin.editor.ardenSyntax.mlmname_text;
+import arden.plugin.editor.ardenSyntax.mlm;
+import arden.plugin.editor.ardenSyntax.mlmname_slot;
 
 /**
  * Provides labels for a EObjects.
@@ -34,16 +34,19 @@ public class ArdenSyntaxLabelProvider extends DefaultEObjectLabelProvider {
         super(delegate);
     }
 
-    String text(P_mlm module) {
+    String text(mlm module) {
         // check if mlmname element exists in module body
-        List<mlmname_text> nameTexts = EcoreUtil2.getAllContentsOfType(module, mlmname_text.class);
-        if (!nameTexts.isEmpty()) {
+        List<mlmname_slot> nameSlots = EcoreUtil2.getAllContentsOfType(module, mlmname_slot.class);
+        if (!nameSlots.isEmpty()) {
             // return its id or text
-            mlmname_text nameText = nameTexts.get(0);
+        	mlmname_slot nameSlot = nameSlots.get(0);
 
-            String name = nameText.getText();
-            if (name != null && !name.isEmpty()) {
-                return "MLM: " + name;
+            String name = nameSlot.getMlmname();
+            if(name == null || name.isEmpty()) {
+            	name = nameSlot.getFilename();
+            }
+            if(name != null && !name.isEmpty()) {
+            	return "MLM: " + name;
             }
         }
         return "Medical Logic Module";

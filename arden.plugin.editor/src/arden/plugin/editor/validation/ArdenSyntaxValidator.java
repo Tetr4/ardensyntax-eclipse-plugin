@@ -3,6 +3,40 @@
  */
 package arden.plugin.editor.validation;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.xtext.EcoreUtil2;
+import org.eclipse.xtext.validation.Check;
+import org.eclipse.xtext.validation.CheckType;
+
+import arden.plugin.editor.ardenSyntax.ArdenSyntaxPackage;
+import arden.plugin.editor.ardenSyntax.action_for;
+import arden.plugin.editor.ardenSyntax.data_block;
+import arden.plugin.editor.ardenSyntax.data_for;
+import arden.plugin.editor.ardenSyntax.data_identifier_assignment;
+import arden.plugin.editor.ardenSyntax.data_var_list;
+import arden.plugin.editor.ardenSyntax.event_any;
+import arden.plugin.editor.ardenSyntax.event_phrase;
+import arden.plugin.editor.ardenSyntax.expr_string;
+import arden.plugin.editor.ardenSyntax.identifier;
+import arden.plugin.editor.ardenSyntax.identifier_becomes;
+import arden.plugin.editor.ardenSyntax.identifier_or_object_ref;
+import arden.plugin.editor.ardenSyntax.institution_slot;
+import arden.plugin.editor.ardenSyntax.interface_phrase;
+import arden.plugin.editor.ardenSyntax.knowledge_body;
+import arden.plugin.editor.ardenSyntax.logic_for;
+import arden.plugin.editor.ardenSyntax.mlm_phrase;
+import arden.plugin.editor.ardenSyntax.mlmname_slot;
+import arden.plugin.editor.ardenSyntax.object_definition;
+import arden.plugin.editor.ardenSyntax.priority_slot;
+import arden.plugin.editor.ardenSyntax.urgency_slot;
 
 /**
  * This class contains custom validation rules. 
@@ -11,15 +45,251 @@ package arden.plugin.editor.validation;
  */
 public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 	
-//	public static final INVALID_NAME = 'invalidName'
-//
-//	@Check
-//	public void checkGreetingStartsWithCapital(Greeting greeting) {
-//		if (!Character.isUpperCase(greeting.getName().charAt(0))) {
-//			warning("Name should start with a capital",
-//					ArdenSyntaxPackage.Literals.GREETING__NAME,
-//					INVALID_NAME);
-//		}
-//	}
+	@Check
+	public void checkUrgencyRange(urgency_slot urgency_slot) {
+		String urgency = urgency_slot.getUrgency().getValue();
+		if (urgency != null) {
+			double urgency_double = Double.valueOf(urgency);
+			if (urgency_double < 1 || urgency_double > 99) {
+				warning("Urgency should be between 1 and 99", ArdenSyntaxPackage.Literals.URGENCY_SLOT__URGENCY);
+			}
+		}
+	}
 	
+	@Check
+	public void checkPriorityRange(priority_slot priority_slot) {
+		String priority = priority_slot.getPriority();
+		try {
+			double priority_double = Double.valueOf(priority);
+			if (priority_double < 1 || priority_double > 99) {
+				warning("Priority should be between 1 and 99", ArdenSyntaxPackage.Literals.PRIORITY_SLOT__PRIORITY);
+			}
+		} catch (NumberFormatException e) {
+			error("Priority must be a number", ArdenSyntaxPackage.Literals.PRIORITY_SLOT__PRIORITY);
+		}
+	}
+	
+	@Check
+	public void checkMlmnameText(mlmname_slot mlmname_slot) {
+		String name = mlmname_slot.getMlmname();
+		String message_suffix = " should only contain letters, digits, underscores, dashs or dots.";
+		if (name != null) {
+			if (!MLMNAME_TEXT.matcher(name).matches()) {
+				warning("Mlmname" + message_suffix, ArdenSyntaxPackage.Literals.MLMNAME_SLOT__MLMNAME);
+			}
+		} else if ((name = mlmname_slot.getFilename()) != null) {
+			if (!MLMNAME_TEXT.matcher(name).matches()) {
+				warning("Filename" + message_suffix, ArdenSyntaxPackage.Literals.MLMNAME_SLOT__FILENAME);
+			}
+		}
+	}
+	private static final Pattern MLMNAME_TEXT = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_.-]*$");
+	
+	@Check(CheckType.NORMAL)
+	public void checkInvalidEventVariable(event_any event_any) {
+		identifier event_id = event_any.getEvent_id();
+		if (event_id == null) {
+			return;
+		}
+
+		// check if assignment has an event_phrase
+		EObject parent = event_id.eContainer();
+		if (parent instanceof identifier_or_object_ref) {
+			parent = parent.eContainer();
+		}
+		parent = parent.eContainer();
+		if (parent instanceof data_identifier_assignment) {
+			data_identifier_assignment assignment = (data_identifier_assignment) parent;
+
+			if (!(assignment.getPhrase() instanceof event_phrase)) {
+				warning("Only event variables can be evoked", ArdenSyntaxPackage.Literals.EVENT_ANY__EVENT_ID);
+			}
+		}
+	}
+	
+	@Check(CheckType.NORMAL)
+	public void checkSpecialVariableReassignment(identifier_becomes id_becomes) {
+		checkSpecialVariableReassignment(id_becomes, getSingleId(id_becomes));
+	}
+	
+	@Check(CheckType.NORMAL)
+	public void checkSpecialVariableReassignment(data_var_list var_list) {
+		identifier[] identifiers = new identifier[var_list.getId_list().size()];
+		var_list.getId_list().toArray(identifiers);
+		checkSpecialVariableReassignment(var_list, identifiers);
+	}
+	
+	private void checkSpecialVariableReassignment(EObject parent, identifier... identifiers) {
+		// travel up to knowledge body
+		knowledge_body knowledge_body = null;
+		while ((parent = parent.eContainer()) != null) {
+			if (parent instanceof knowledge_body) {
+				knowledge_body = (knowledge_body) parent;
+				break;
+			} else if (parent instanceof data_block) {
+				// allow reassignment in data slot
+				return;
+			}
+		}
+		if (knowledge_body == null) {
+			System.out.println("notfound");
+			return;
+		}
+		
+		// check assignments
+		List<data_identifier_assignment> assignments = EcoreUtil2.getAllContentsOfType(knowledge_body, data_identifier_assignment.class);
+		for (data_identifier_assignment assignment : assignments) {
+			identifier data_identifier = getSingleId(assignment.getId_becomes());
+			for (identifier identifier : identifiers) {
+				if (sameName(data_identifier, identifier)) {
+					EObject phrase = assignment.getPhrase();
+					if (phrase instanceof object_definition) {
+						error("Object variables cannot be redefined", identifier,
+								ArdenSyntaxPackage.Literals.IDENTIFIER__NAME);
+					} else if (phrase instanceof event_phrase) {
+						error("Event variables cannot be redefined", identifier,
+								ArdenSyntaxPackage.Literals.IDENTIFIER__NAME);
+					} else if (phrase instanceof mlm_phrase) {
+						error("MLM variables cannot be redefined", identifier,
+								ArdenSyntaxPackage.Literals.IDENTIFIER__NAME);
+					} else if (phrase instanceof interface_phrase) {
+						error("Interface variables cannot be redefined", identifier,
+								ArdenSyntaxPackage.Literals.IDENTIFIER__NAME);
+					}
+				}
+			}
+		}
+	}
+	
+	@Check(CheckType.NORMAL)
+	public void checkLoopVariableReassignment(identifier_becomes id_becomes) {
+		checkLoopVariableReassignment(id_becomes, getSingleId(id_becomes));
+	}
+	
+	@Check(CheckType.NORMAL)
+	public void checkLoopVariableReassignment(data_var_list var_list) {
+		identifier[] identifiers = new identifier[var_list.getId_list().size()];
+		var_list.getId_list().toArray(identifiers);
+		checkLoopVariableReassignment(var_list, identifiers);
+	}
+	
+	private void checkLoopVariableReassignment(EObject parent, identifier... identifiers) {
+		while ((parent = parent.eContainer()) != null) {
+			identifier loopVar = null;
+			if (parent instanceof logic_for) {
+				logic_for logic_for = (logic_for) parent;
+				loopVar = logic_for.getLoop_var();
+			} else if (parent instanceof data_for) {
+				data_for data_for = (data_for) parent;
+				loopVar = data_for.getLoop_var();
+			} else if (parent instanceof action_for) {
+				action_for action_for = (action_for) parent;
+				loopVar = action_for.getLoop_var();
+			}
+			if (loopVar != null) {
+				for (identifier identifier : identifiers) {
+					if (sameName(loopVar, identifier)) {
+						error("The loop variable cannot be assigned to", identifier,
+								ArdenSyntaxPackage.Literals.IDENTIFIER__NAME);
+					}
+				}
+			}
+		}
+	}
+
+	private identifier getSingleId(identifier_becomes id_becomes) {
+		EObject idObject = id_becomes.getId();
+		if (idObject instanceof identifier_or_object_ref) {
+			identifier_or_object_ref identifier_or_object_ref = (identifier_or_object_ref) idObject;
+			return identifier_or_object_ref.getId();
+		} else {
+			return (identifier) idObject;
+		}
+	}
+	
+	private boolean sameName(identifier first, identifier second) {
+		return first.getName().toLowerCase().equals(second.getName().toLowerCase());
+	}
+	
+	@Check
+	public void checkFormattedWithSpecification(expr_string expr_string) {
+		for (String format_string : expr_string.getFormat_string_list()) {
+			Matcher matcher = FORMAT_SPECIFIER.matcher(format_string);
+			while (matcher.find()) {
+				char type = matcher.group(1).charAt(0);
+				if (!VALID_FORMAT_TYPES.contains(type)) {
+					warning("The format type <" + type + "> is not supported",
+							ArdenSyntaxPackage.Literals.EXPR_STRING__FORMAT_STRING_LIST);
+					continue;
+				}
+			}
+		}
+	}
+	private static final Pattern FORMAT_SPECIFIER = Pattern.compile("%[0+ \\#-]?[+-]?[0-9.*]*([a-zA-Z])");
+	private static final List<Character> VALID_FORMAT_TYPES = Arrays.asList('c', 'C', 'd', 'I', 'o', 'u', 'x', 'X', 'e',
+			'E', 'f', 'g', 'G', 's', 't'); // valid but unsupported: 'n', 'p'
+
+	@Check
+	public void checkIdentifierName(identifier identifier) {
+		String name = identifier.getName();
+
+		if (RESERVED_KEYWORDS.contains(name.toLowerCase())) {
+			error("<" + name + "> is reserved and may not be used as a variable name",
+					ArdenSyntaxPackage.Literals.IDENTIFIER__NAME);
+		}
+	}
+	private static final Set<String> RESERVED_KEYWORDS = new HashSet<String>(Arrays.asList( "Abs", "action", "after", "ago", "alert", "all", "and", "any", "arccos", "arcsin",
+			"arctan", "arden", "are", "argument", "as", "at", "attribute", "author", "average", "avg", "be",
+			"before", "Boolean", "call", "ceiling", "characters", "citations", "conclude", "cos", "cosine", "count",
+			"clone", "currenttime", "data", "data_driven", "data-driven", "date", "day", "days", "decrease",
+			"delay", "destination", "do", "duration", "earliest", "else", "elseif", "enddo", "endif", "end", "eq",
+			"equal", "event", "eventtime", "every", "evoke", "exist", "exists", "exp", "expired", "explanation",
+			"extract", "false", "filename", "find", "first", "floor", "following", "for", "formatted", "from", "ge",
+			"greater", "gt", "hour", "hours", "if", "in", "include", "increase", "index", "institution", "int",
+			"interface", "interval", "is", "it", "keywords", "knowledge", "last", "latest", "le", "left", "length",
+			"less", "let", "library", "links", "list", "log", "log10", "logic", "lowercase", "lt", "maintenance",
+			"matches", "max", "maximum", "median", "merge", "message", "min", "minimum", "minute", "minutes", "mlm",
+			"mlmname", "mlm_self", "month", "months", "names", "ne", "nearest", "new", "no", "not", "now", "null",
+			"number", "object", "occur", "occurred", "occurs", "of", "or", "past", "pattern", "percent",
+			"preceding", "present", "priority", "production", "purpose", "read", "refute", "research", "return",
+			"reverse", "right", "round", "same", "second", "seconds", "seqto", "sin", "sine", "slope", "sort",
+			"specialist", "sqrt", "starting", "stddev", "string", "substring", "sum", "support", "surrounding",
+			"tan", "tangent", "testing", "than", "the", "then", "they", "time", "title", "to", "triggertime",
+			"trim", "true", "truncate", "type", "unique", "until", "uppercase", "urgency", "validation", "variance",
+			"version", "was", "week", "weeks", "were", "where", "while", "with", "within", "write", "year",
+			"years" ));
+	
+	@Check
+	public void checkIdentifierLength(identifier identifier) {
+		String name = identifier.getName();
+		if (name.length() > 80) {
+			lengthWarning("Identifier", name.length(), ArdenSyntaxPackage.Literals.IDENTIFIER__NAME);
+		}
+	}
+	
+	@Check
+	public void checkInsitutionLength(institution_slot institution_slot) {
+		String institution = institution_slot.getInstitution();
+		if (institution.length() > 80) {
+			lengthWarning("Insitution", institution.length(),
+					ArdenSyntaxPackage.Literals.INSTITUTION_SLOT__INSTITUTION);
+		}
+	}
+	
+	@Check
+	public void checkMlmnameLength(mlmname_slot mlmname_slot) {
+		String mlmname = mlmname_slot.getMlmname();
+		String filename = mlmname_slot.getFilename();
+		if (mlmname != null && mlmname.length() > 80) {
+			lengthWarning("Mlmname", mlmname.length(), ArdenSyntaxPackage.Literals.MLMNAME_SLOT__MLMNAME);
+		} else if (filename != null && filename.length() > 80) {
+			lengthWarning("Filename", filename.length(), ArdenSyntaxPackage.Literals.MLMNAME_SLOT__FILENAME);
+		}
+	}
+	
+	private void lengthWarning(String slotname, int length, EStructuralFeature feature) {
+		warning(slotname + " is " + length + " characters long, but should only be up to 80 characters in length.",
+				feature);
+	}
+
 }
