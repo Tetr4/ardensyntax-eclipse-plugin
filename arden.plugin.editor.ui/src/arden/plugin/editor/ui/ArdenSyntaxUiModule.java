@@ -8,11 +8,21 @@ import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculat
 import org.eclipse.xtext.ui.editor.folding.IFoldingRegionProvider;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.AbstractAntlrTokenToAttributeIdMapper;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration;
+<<<<<<< HEAD
+=======
+import org.eclipse.xtext.ui.editor.templates.XtextTemplateContextType;
+import org.eclipse.xtext.ui.wizard.IProjectCreator;
+>>>>>>> 72d50c0... Fix wizard
 
 import arden.plugin.editor.ui.folding.ArdenSyntaxFoldingRegionProvider;
 import arden.plugin.editor.ui.syntaxcoloring.ArdenSyntaxAntlrTokenToAttributeIdMapper;
 import arden.plugin.editor.ui.syntaxcoloring.ArdenSyntaxHighlightingConfiguration;
 import arden.plugin.editor.ui.syntaxcoloring.ArdenSyntaxSemanticHighlightingCalculator;
+<<<<<<< HEAD
+=======
+import arden.plugin.editor.ui.templates.ArdenSyntaxTemplateContextType;
+import arden.plugin.editor.ui.wizard.ArdenSyntaxProjectCreator;
+>>>>>>> 72d50c0... Fix wizard
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.
@@ -39,4 +49,7 @@ public class ArdenSyntaxUiModule extends AbstractArdenSyntaxUiModule {
     	return ArdenSyntaxAntlrTokenToAttributeIdMapper.class ;
     }
     
+	public Class<? extends IProjectCreator> bindIProjectCreator() {
+		return ArdenSyntaxProjectCreator.class;
+	}
 }
