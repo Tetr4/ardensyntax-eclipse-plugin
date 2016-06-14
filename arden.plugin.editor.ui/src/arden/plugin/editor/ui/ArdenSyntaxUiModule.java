@@ -5,6 +5,7 @@ package arden.plugin.editor.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator;
+import org.eclipse.xtext.ui.editor.autoedit.AbstractEditStrategyProvider;
 import org.eclipse.xtext.ui.editor.folding.IFoldingRegionProvider;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.AbstractAntlrTokenToAttributeIdMapper;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration;
@@ -13,6 +14,7 @@ import org.eclipse.xtext.ui.wizard.IProjectCreator;
 
 import com.google.inject.Binder;
 
+import arden.plugin.editor.ui.autoedit.ArdenSyntaxAutoEditStrategyProvider;
 import arden.plugin.editor.ui.folding.ArdenSyntaxFoldingRegionProvider;
 import arden.plugin.editor.ui.syntaxcoloring.ArdenSyntaxAntlrTokenToAttributeIdMapper;
 import arden.plugin.editor.ui.syntaxcoloring.ArdenSyntaxHighlightingConfiguration;
@@ -54,4 +56,8 @@ public class ArdenSyntaxUiModule extends AbstractArdenSyntaxUiModule {
 	public Class<? extends IProjectCreator> bindIProjectCreator() {
 		return ArdenSyntaxProjectCreator.class;
 	}
+	
+    public Class<? extends AbstractEditStrategyProvider> bindAbstractEditStrategyProvider() {
+    	return ArdenSyntaxAutoEditStrategyProvider.class ;
+    }    
 }
