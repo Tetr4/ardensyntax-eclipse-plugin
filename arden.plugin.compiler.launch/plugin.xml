@@ -2,8 +2,7 @@
 <!DOCTYPE plugin>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
-         point="org.eclipse.debug.core.launchConfigurationTypes">
+   <extension point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
             delegate="arden.plugin.compiler.launch.launchconfig.Arden2ByteCodeLaunchConfiguration"
             id="arden.plugin.compiler.launch.launchMLM"
@@ -12,8 +11,14 @@
             sourceLocatorId="arden.plugin.compiler.launch.SourceLocator">
       </launchConfigurationType>
    </extension>
-   <extension
-         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+   <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+        <launchConfigurationTypeImage
+            icon="icons/mlm.png"
+            configTypeID="arden.plugin.compiler.launch.launchMLM"
+            id="arden.plugin.compiler.launch.launchconfig.icon">
+        </launchConfigurationTypeImage>
+   </extension>
+   <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
             class="arden.plugin.compiler.launch.launchconfig.Arden2ByteCodeLaunchConfigurationTabGroup"
             id="arden.plugin.compiler.launch.launchconfig.Arden2ByteCodeLaunchConfigurationTabGroup"
@@ -29,12 +34,12 @@
          </launchMode>
       </launchConfigurationTabGroup>
    </extension>
-   <extension
-         point="org.eclipse.debug.ui.launchShortcuts">
+   <extension point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
             class="arden.plugin.compiler.launch.launchconfig.LaunchShortcut"
             id="arden.plugin.compiler.launch.launchShortcut"
             label="Medical Logic Module"
+            icon="icons/mlm.png"
             modes="run, debug">
          <contextualLaunch>
             <enablement>
@@ -55,8 +60,7 @@
          </configurationType>
       </shortcut>
    </extension>
-   <extension
-         point="org.eclipse.core.expressions.propertyTesters">
+   <extension point="org.eclipse.core.expressions.propertyTesters">
       <propertyTester
             class="arden.plugin.compiler.launch.core.MlmEditorTester"
             id="arden.plugin.compiler.launch.MlmEditorTester"
@@ -72,16 +76,14 @@
             type="org.eclipse.core.runtime.IAdaptable">
       </propertyTester>
    </extension>
-   <extension
-         point="org.eclipse.debug.core.sourceLocators">
+   <extension point="org.eclipse.debug.core.sourceLocators">
       <sourceLocator
             class="arden.plugin.compiler.launch.debug.SourceLocator"
             id="arden.plugin.compiler.launch.SourceLocator"
             name="MLM Source Locator">
       </sourceLocator>
    </extension>
-   <extension
-         point="org.eclipse.debug.core.breakpoints">
+   <extension point="org.eclipse.debug.core.breakpoints">
       <breakpoint
             class="arden.plugin.compiler.launch.breakpoints.ArdenSyntaxLineBreakpoint"
             id="arden.plugin.compiler.launch.lineBreakpoint"
@@ -99,8 +101,7 @@
             value="true">
       </persistent>
    </extension>
-   <extension
-         point="org.eclipse.debug.ui.toggleBreakpointsTargetFactories">
+   <extension point="org.eclipse.debug.ui.toggleBreakpointsTargetFactories">
       <toggleTargetFactory
             class="arden.plugin.compiler.launch.breakpoints.ToggleBreakpointsTargetFactory"
             id="arden.plugin.compiler.launch.ToggleBreakpointsTargetFactory">
@@ -111,8 +112,7 @@
          </enablement>
       </toggleTargetFactory>
    </extension>
-   <extension
-         point="org.eclipse.core.runtime.adapters">
+   <extension point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="org.eclipse.ui.texteditor.ITextEditor"
             class="arden.plugin.compiler.launch.breakpoints.BreakpointAdapterFactory">
@@ -121,8 +121,7 @@
          </adapter>
       </factory>
    </extension>
-   <extension
-         point="org.eclipse.ui.editorActions">
+   <extension point="org.eclipse.ui.editorActions">
       <editorContribution
             targetID="arden.plugin.editor.ArdenSyntax"
             id="arden.plugin.editor.ArdenSyntax.BreakpointRulerActions">
