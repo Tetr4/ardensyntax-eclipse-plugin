@@ -33,7 +33,10 @@ public class ArdenSyntaxProposalProvider extends AbstractArdenSyntaxProposalProv
             "action:",
             "maintenance:",
             "library:",
-            "knowledge:"
+            "knowledge:",
+            "if",
+            "while",
+            "for"
     ));
     
     @Override
