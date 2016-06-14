@@ -9,7 +9,7 @@
     institution: ${institution};;
     author: ${user};;
     specialist: ;;
-    date: 2012-09-05;;
+    date: ${id:date('YYYY-MM-dd')};;
     validation: testing;;
 
 library: 
@@ -22,17 +22,15 @@ library:
 knowledge:
     type: data-driven;;
 
-    data:
+    data: ;;
+
+    evoke: ;;
+
+    logic:
+        CONCLUDE TRUE; 
     ;;
 
-    evoke: 
-    ;;
-
-    logic: 
-    ;;
-
-    action:
-    ;;
+    action: ;;
 
 end:
 </template>
@@ -45,7 +43,7 @@ end:
     institution: ${institution};;
     author: ${user};;
     specialist: ;;
-    date: 2012-09-05;;
+    date: ${id:date('YYYY-MM-dd')};;
     validation: testing;;
 
 </template>
@@ -62,17 +60,15 @@ end:
 <template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.kw_knowledge:" deleted="false" description="Add the knowledge category" enabled="true" id="Knowledge category" name="Knowledge category">knowledge:
     type: data-driven;;
 
-    data:
+    data: ;;
+
+    evoke: ;;
+
+    logic:
+        CONCLUDE TRUE; 
     ;;
 
-    evoke: 
-    ;;
-
-    logic: 
-    ;;
-
-    action:
-    ;;
+    action: ;;
 
 end:
 </template>
@@ -145,6 +141,21 @@ end:
 </template>
 
 <template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.urgency_slot" deleted="false" description="urgency slot" enabled="true" id="urgency" name="urgency">urgency: ${urgency} ;;
+</template>
+
+<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_while" deleted="false" description="Add while loop" enabled="true" id="while" name="while">while ${condition} do
+    ${cursor};
+enddo;
+</template>
+
+<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_for" deleted="false" description="Add for loop" enabled="true" id="for" name="for">for ${loop_variable} in ${collection} do
+    ${cursor};
+enddo;
+</template>
+
+<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_if" deleted="false" description="Add if statement" enabled="true" id="if" name="if">if ${condition} then
+    ${cursor};
+endif;
 </template>
 
 </templates>

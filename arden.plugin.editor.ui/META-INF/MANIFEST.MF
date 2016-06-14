@@ -14,7 +14,9 @@ Require-Bundle: arden.plugin.editor,
  org.eclipse.ui,
  org.eclipse.compare,
  org.eclipse.xtext.builder,
- org.eclipse.xtext.common.types.ui
+ org.eclipse.xtext.common.types.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources
 Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: arden.plugin.editor.ui.contentassist,

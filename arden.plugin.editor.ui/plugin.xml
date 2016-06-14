@@ -8,6 +8,7 @@
 			class="arden.plugin.editor.ui.ArdenSyntaxExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
 			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
 			default="true"
+			icon="icons/mlm.png"
 			extensions="mlm"
 			id="arden.plugin.editor.ArdenSyntax"
 			name="ArdenSyntax Editor">
@@ -288,6 +289,27 @@
 				<reference definitionId="arden.plugin.editor.ArdenSyntax.Editor.opened" />
 			</activeWhen>
 		</handler>
+	</extension>
+	<extension point="org.eclipse.ui.newWizards">
+		<wizard
+			category="arden.plugin.editor.ui.wizard.category"
+			class="arden.plugin.editor.ui.ArdenSyntaxExecutableExtensionFactory:arden.plugin.editor.ui.wizard.ArdenSyntaxNewProjectWizard"
+			icon="icons/project.gif"
+			id="arden.plugin.editor.ui.wizard.ArdenSyntaxNewProjectWizard"
+			name="Arden Syntax Project"
+				project="true">
+		</wizard>
+		<wizard
+			category="arden.plugin.editor.ui.wizard.category"
+			class="arden.plugin.editor.ui.ArdenSyntaxExecutableExtensionFactory:arden.plugin.editor.ui.wizard.ArdenSyntaxNewFileWizard"
+			icon="icons/mlm.png"
+			id="arden.plugin.editor.ui.wizard.ArdenSyntaxNewFileWizard"
+			name="MLM">
+		</wizard>
+		<category
+			name="Arden Syntax"
+			id="arden.plugin.editor.ui.wizard.category">
+		</category>
 	</extension>
 	<!-- Quick Outline -->
 	<extension

@@ -4,13 +4,23 @@
 package arden.plugin.editor.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.xtext.ui.editor.folding.IFoldingRegionProvider;
-import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration;
 import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator;
+import org.eclipse.xtext.ui.editor.autoedit.AbstractEditStrategyProvider;
+import org.eclipse.xtext.ui.editor.folding.IFoldingRegionProvider;
+import org.eclipse.xtext.ui.editor.syntaxcoloring.AbstractAntlrTokenToAttributeIdMapper;
+import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration;
+import org.eclipse.xtext.ui.editor.templates.XtextTemplateContextType;
+import org.eclipse.xtext.ui.wizard.IProjectCreator;
 
+import com.google.inject.Binder;
+
+import arden.plugin.editor.ui.autoedit.ArdenSyntaxAutoEditStrategyProvider;
 import arden.plugin.editor.ui.folding.ArdenSyntaxFoldingRegionProvider;
+import arden.plugin.editor.ui.syntaxcoloring.ArdenSyntaxAntlrTokenToAttributeIdMapper;
 import arden.plugin.editor.ui.syntaxcoloring.ArdenSyntaxHighlightingConfiguration;
 import arden.plugin.editor.ui.syntaxcoloring.ArdenSyntaxSemanticHighlightingCalculator;
+import arden.plugin.editor.ui.templates.ArdenSyntaxTemplateContextType;
+import arden.plugin.editor.ui.wizard.ArdenSyntaxProjectCreator;
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.
@@ -20,6 +30,12 @@ public class ArdenSyntaxUiModule extends AbstractArdenSyntaxUiModule {
 	public ArdenSyntaxUiModule(AbstractUIPlugin plugin) {
 		super(plugin);
 	}
+	
+    @Override
+    public void configure(Binder binder) {
+        super.configure(binder);
+        binder.bind(XtextTemplateContextType.class).to(ArdenSyntaxTemplateContextType.class);
+    }
 	
     public Class<? extends ISemanticHighlightingCalculator> bindISemanticHighlightingCalculator() {
         return ArdenSyntaxSemanticHighlightingCalculator.class;
@@ -32,4 +48,16 @@ public class ArdenSyntaxUiModule extends AbstractArdenSyntaxUiModule {
     public Class<? extends IFoldingRegionProvider> bindIFoldingRegionProvider() {
         return ArdenSyntaxFoldingRegionProvider.class;
     }
+    
+    public Class<? extends AbstractAntlrTokenToAttributeIdMapper> bindAbstractAntlrTokenToAttributeIdMapper() {
+    	return ArdenSyntaxAntlrTokenToAttributeIdMapper.class ;
+    }
+    
+	public Class<? extends IProjectCreator> bindIProjectCreator() {
+		return ArdenSyntaxProjectCreator.class;
+	}
+	
+    public Class<? extends AbstractEditStrategyProvider> bindAbstractEditStrategyProvider() {
+    	return ArdenSyntaxAutoEditStrategyProvider.class ;
+    }    
 }
