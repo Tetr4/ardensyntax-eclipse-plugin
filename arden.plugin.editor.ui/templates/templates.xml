@@ -20,7 +20,7 @@ library:
     links: ${links};;
 
 knowledge:
-    type: data-driven;;
+    type: data_driven;;
 
     data: ;;
 
@@ -58,7 +58,7 @@ end:
 </template>
 
 <template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.kw_knowledge:" deleted="false" description="Add the knowledge category" enabled="true" id="Knowledge category" name="Knowledge category">knowledge:
-    type: data-driven;;
+    type: data_driven;;
 
     data: ;;
 
