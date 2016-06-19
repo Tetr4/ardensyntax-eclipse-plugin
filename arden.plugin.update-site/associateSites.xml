@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE associateSites>
+<!-- Adds an update-site for the newest Xtext Version -->
+<associateSites>
+  <associateSite url="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/" label="Xtext" />
+</associateSites>
