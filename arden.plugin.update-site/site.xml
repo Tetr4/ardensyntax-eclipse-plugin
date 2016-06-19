@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE site>
 <site>
+   <description name="Arden4Eclipse" url="https://plri.github.io/ardensyntax-eclipse-plugin/update/">
+      The Arden4Eclipse update site contains the Arden Syntax Editor and the Arden2ByteCode Integration.
+   </description>
    <feature url="features/arden.plugin.compiler.feature_1.0.0.qualifier.jar" id="arden.plugin.compiler.feature" version="1.0.0.qualifier">
       <category name="arden.plugin.category"/>
    </feature>
