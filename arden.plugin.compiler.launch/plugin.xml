@@ -20,8 +20,8 @@
    </extension>
    <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
-            class="arden.plugin.compiler.launch.launchconfig.Arden2ByteCodeLaunchConfigurationTabGroup"
-            id="arden.plugin.compiler.launch.launchconfig.Arden2ByteCodeLaunchConfigurationTabGroup"
+            class="arden.plugin.compiler.launch.launchconfig.TabGroup"
+            id="arden.plugin.compiler.launch.launchconfig.TabGroup"
             type="arden.plugin.compiler.launch.launchMLM">
          <launchMode
                description="Debug"

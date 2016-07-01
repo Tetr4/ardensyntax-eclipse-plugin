@@ -24,6 +24,12 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
 import arden.plugin.compiler.launch.Activator;
 
+/**
+ * Handles different kinds of launch operations and adds appropriate values
+ * (e.g. Project, MLM path) to the run configuration.<br>
+ * E.g. running an MLM via right-clicking the editor vs. running it via
+ * right-clicking in the project explorer.
+ */
 public class LaunchShortcut implements ILaunchShortcut2 {
 
 	public final static String CONFIG_TYPE = Activator.PLUGIN_ID + ".launchMLM";
@@ -46,7 +52,7 @@ public class LaunchShortcut implements ILaunchShortcut2 {
 			MessageDialog.openInformation(
 					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
 					"MLM Launch", 
-					"Save the file first");
+					"Save the file(s) first");
 		} else {
 			IFileEditorInput input = (IFileEditorInput) editor.getEditorInput();
 			IFile file = input.getFile();
@@ -87,6 +93,7 @@ public class LaunchShortcut implements ILaunchShortcut2 {
 		new MainTab().setDefaults(wc);
 		wc.setAttribute(MainTab.PROJECT, resource.getProject().getName());
 		wc.setAttribute(MainTab.MLM, resource.getProjectRelativePath().toString());
+		
 		return wc.doSave();
 	}
 
@@ -116,8 +123,8 @@ public class LaunchShortcut implements ILaunchShortcut2 {
 		return null;
 	}
 	
-	private ILaunchConfiguration chooseConfig(
-			List<ILaunchConfiguration> candidates) {
+	private ILaunchConfiguration chooseConfig(List<ILaunchConfiguration> candidates) {
+		// Show dialog to choose from multiple launch configurations
 	    IDebugModelPresentation labelProvider = DebugUITools.newDebugModelPresentation();
 		ElementListSelectionDialog dialog = new ElementListSelectionDialog(
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), labelProvider);
