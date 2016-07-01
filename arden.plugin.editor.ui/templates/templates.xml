@@ -143,19 +143,19 @@ end:
 <template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.urgency_slot" deleted="false" description="urgency slot" enabled="true" id="urgency" name="urgency">urgency: ${urgency} ;;
 </template>
 
-<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_while" deleted="false" description="Add while loop" enabled="true" id="while" name="while">while ${condition} do
+<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_while" deleted="false" description="Add while loop" enabled="true" id="while" name="while">WHILE ${condition} DO
     ${cursor};
-enddo;
+ENDDO;
 </template>
 
-<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_for" deleted="false" description="Add for loop" enabled="true" id="for" name="for">for ${loop_variable} in ${collection} do
+<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_for" deleted="false" description="Add for loop" enabled="true" id="for" name="for">FOR ${item} IN ${collection} DO
     ${cursor};
-enddo;
+ENDDO;
 </template>
 
-<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_if" deleted="false" description="Add if statement" enabled="true" id="if" name="if">if ${condition} then
+<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_if" deleted="false" description="Add if statement" enabled="true" id="if" name="if">IF ${condition} THEN
     ${cursor};
-endif;
+ENDIF;
 </template>
 
 </templates>
