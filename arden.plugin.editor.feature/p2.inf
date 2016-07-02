@@ -1,2 +1,4 @@
 update.id = ArdenSyntaxEditor.feature.group
-update.range = [1.0.0.$qualifier$, 1.1.0.$qualifier$)
+update.matchExp = providedCapabilities.exists(pc | pc.namespace == 'org.eclipse.equinox.p2.iu' && ( \
+ pc.name == 'arden.plugin.editor.feature.feature.group' || \
+ pc.name == 'ArdenSyntaxEditor.feature.group'))
