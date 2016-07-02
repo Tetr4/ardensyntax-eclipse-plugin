@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE feature>
 <feature
       id="arden.plugin.editor.feature"
       label="Arden Syntax Editor"
-      version="1.2.0.qualifier"
+      version="1.2.1.qualifier"
       provider-name="Arden2ByteCode Team">
 
    <description url="https://plri.github.io/arden2bytecode/arden4eclipse/">
