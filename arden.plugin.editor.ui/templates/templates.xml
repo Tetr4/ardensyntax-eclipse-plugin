@@ -20,7 +20,7 @@ library:
     links: ${links};;
 
 knowledge:
-    type: data-driven;;
+    type: data_driven;;
 
     data: ;;
 
@@ -58,7 +58,7 @@ end:
 </template>
 
 <template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.kw_knowledge:" deleted="false" description="Add the knowledge category" enabled="true" id="Knowledge category" name="Knowledge category">knowledge:
-    type: data-driven;;
+    type: data_driven;;
 
     data: ;;
 
@@ -143,19 +143,31 @@ end:
 <template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.urgency_slot" deleted="false" description="urgency slot" enabled="true" id="urgency" name="urgency">urgency: ${urgency} ;;
 </template>
 
-<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_while" deleted="false" description="Add while loop" enabled="true" id="while" name="while">while ${condition} do
+<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_while" deleted="false" description="while loop" enabled="true" id="while" name="while">WHILE ${condition} DO
     ${cursor};
-enddo;
+ENDDO;
 </template>
 
-<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_for" deleted="false" description="Add for loop" enabled="true" id="for" name="for">for ${loop_variable} in ${collection} do
+<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_for" deleted="false" description="iterate over collection" enabled="true" id="foreach" name="foreach">FOR ${item} IN ${collection} DO
     ${cursor};
-enddo;
+ENDDO;
 </template>
 
-<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_if" deleted="false" description="Add if statement" enabled="true" id="if" name="if">if ${condition} then
+<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_for" deleted="false" description="iterate over sequence" enabled="true" id="for" name="for">FOR ${i} IN ${1} SEQTO ${10} DO
     ${cursor};
-endif;
+ENDDO;
+</template>
+
+<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_if" deleted="false" description="if statement" enabled="true" id="if" name="if">IF ${condition} THEN
+    ${cursor};
+ENDIF;
+</template>
+
+<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_if" deleted="false" description="if else statement" enabled="true" id="ifelse" name="ifelse">IF ${condition} THEN
+    ${cursor};
+ELSE
+    ;
+ENDIF;
 </template>
 
 </templates>

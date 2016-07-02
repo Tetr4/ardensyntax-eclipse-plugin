@@ -9,6 +9,7 @@ import org.eclipse.xtext.ui.editor.autoedit.AbstractEditStrategyProvider;
 import org.eclipse.xtext.ui.editor.folding.IFoldingRegionProvider;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.AbstractAntlrTokenToAttributeIdMapper;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration;
+import org.eclipse.xtext.ui.editor.templates.DefaultTemplateProposalProvider;
 import org.eclipse.xtext.ui.editor.templates.XtextTemplateContextType;
 import org.eclipse.xtext.ui.wizard.IProjectCreator;
 
@@ -20,6 +21,7 @@ import arden.plugin.editor.ui.syntaxcoloring.ArdenSyntaxAntlrTokenToAttributeIdM
 import arden.plugin.editor.ui.syntaxcoloring.ArdenSyntaxHighlightingConfiguration;
 import arden.plugin.editor.ui.syntaxcoloring.ArdenSyntaxSemanticHighlightingCalculator;
 import arden.plugin.editor.ui.templates.ArdenSyntaxTemplateContextType;
+import arden.plugin.editor.ui.templates.ArdenSyntaxTemplateProposalProvider;
 import arden.plugin.editor.ui.wizard.ArdenSyntaxProjectCreator;
 
 /**
@@ -59,5 +61,9 @@ public class ArdenSyntaxUiModule extends AbstractArdenSyntaxUiModule {
 	
     public Class<? extends AbstractEditStrategyProvider> bindAbstractEditStrategyProvider() {
     	return ArdenSyntaxAutoEditStrategyProvider.class ;
-    }    
+    }
+    
+	public Class<? extends DefaultTemplateProposalProvider> bindDefaultTemplateProposalProvider() {
+		return ArdenSyntaxTemplateProposalProvider.class;
+	}
 }
