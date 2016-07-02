@@ -4,7 +4,7 @@
    <description name="Arden4Eclipse" url="https://plri.github.io/ardensyntax-eclipse-plugin/update/">
       The Arden4Eclipse update site contains the Arden Syntax Editor and the Arden2ByteCode Integration.
    </description>
-   <feature url="features/arden.plugin.compiler.feature_1.0.0.qualifier.jar" id="arden.plugin.compiler.feature" version="1.0.0.qualifier">
+   <feature url="features/arden.plugin.compiler.feature_1.1.0.qualifier.jar" id="arden.plugin.compiler.feature" version="1.1.0.qualifier">
       <category name="arden.plugin.category"/>
    </feature>
    <feature url="features/arden.plugin.editor.feature_1.2.0.qualifier.jar" id="arden.plugin.editor.feature" version="1.2.0.qualifier">

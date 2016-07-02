@@ -2,7 +2,7 @@
 <feature
       id="arden.plugin.compiler.feature"
       label="Arden2ByteCode Integration"
-      version="1.0.0.qualifier"
+      version="1.1.0.qualifier"
       provider-name="Arden2ByteCode Team">
 
    <description url="https://plri.github.io/arden2bytecode/arden4eclipse/">
