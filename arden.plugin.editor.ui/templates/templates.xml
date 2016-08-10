@@ -143,27 +143,27 @@ end:
 <template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.urgency_slot" deleted="false" description="urgency slot" enabled="true" id="urgency" name="urgency">urgency: ${urgency} ;;
 </template>
 
-<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_while" deleted="false" description="while loop" enabled="true" id="while" name="while">WHILE ${condition} DO
+<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_WHILE" deleted="false" description="while loop" enabled="true" id="while" name="while">WHILE ${condition} DO
     ${cursor};
 ENDDO;
 </template>
 
-<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_for" deleted="false" description="iterate over collection" enabled="true" id="foreach" name="foreach">FOR ${item} IN ${collection} DO
+<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_FOR" deleted="false" description="iterate over collection" enabled="true" id="foreach" name="foreach">FOR ${item} IN ${collection} DO
     ${cursor};
 ENDDO;
 </template>
 
-<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_for" deleted="false" description="iterate over sequence" enabled="true" id="for" name="for">FOR ${i} IN ${1} SEQTO ${10} DO
+<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_FOR" deleted="false" description="iterate over sequence" enabled="true" id="for" name="for">FOR ${i} IN ${1} SEQTO ${10} DO
     ${cursor};
 ENDDO;
 </template>
 
-<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_if" deleted="false" description="if statement" enabled="true" id="if" name="if">IF ${condition} THEN
+<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_IF" deleted="false" description="if statement" enabled="true" id="if" name="if">IF ${condition} THEN
     ${cursor};
 ENDIF;
 </template>
 
-<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_if" deleted="false" description="if else statement" enabled="true" id="ifelse" name="ifelse">IF ${condition} THEN
+<template autoinsert="false" context="arden.plugin.editor.ArdenSyntax.kw_IF" deleted="false" description="if else statement" enabled="true" id="ifelse" name="ifelse">IF ${condition} THEN
     ${cursor};
 ELSE
     ;
