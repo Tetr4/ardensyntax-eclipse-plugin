@@ -34,9 +34,9 @@ public class ArdenSyntaxProposalProvider extends AbstractArdenSyntaxProposalProv
             "maintenance:",
             "library:",
             "knowledge:",
-            "if",
-            "while",
-            "for"
+            "IF",
+            "WHILE",
+            "FOR"
     ));
     
     @Override
