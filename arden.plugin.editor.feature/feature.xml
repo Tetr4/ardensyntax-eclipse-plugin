@@ -3,7 +3,7 @@
 <feature
       id="arden.plugin.editor.feature"
       label="Arden Syntax Editor"
-      version="1.2.1.qualifier"
+      version="1.2.2.qualifier"
       provider-name="Arden2ByteCode Team">
 
    <description url="https://plri.github.io/arden2bytecode/arden4eclipse/">
