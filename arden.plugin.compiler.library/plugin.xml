@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plugin>
+<?eclipse version="3.4"?>
+<plugin>
+   <!-- Allows adding Arden2ByteCode to Java projects as a library, similar to the Eclipse JUnit library -->
+   <extension point="org.eclipse.jdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+         id="arden.plugin.compiler.CONTAINER"
+         class="arden.plugin.compiler.library.ArdenClasspathContainerInitializer"/>
+   </extension>
+
+   <extension point="org.eclipse.jdt.ui.classpathContainerPage">
+      <classpathContainerPage
+            id="arden.plugin.compiler.CONTAINER"
+            name="Arden2ByteCode"
+            class="arden.plugin.compiler.library.ArdenContainerWizardPage">
+      </classpathContainerPage>
+   </extension>
+
+</plugin>
