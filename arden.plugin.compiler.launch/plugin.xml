@@ -10,11 +10,23 @@
             name="Medical Logic Module"
             sourceLocatorId="arden.plugin.compiler.launch.SourceLocator">
       </launchConfigurationType>
+      <launchConfigurationType
+            delegate="arden.plugin.compiler.launch.junitconfig.JUnitLaunchConfiguration"
+            id="arden.plugin.compiler.launch.testMLM"
+            modes="run, debug"
+            name="MLM Test"
+            sourceLocatorId="arden.plugin.compiler.launch.SourceLocator">
+      </launchConfigurationType>
    </extension>
    <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
         <launchConfigurationTypeImage
             icon="icons/mlm.png"
             configTypeID="arden.plugin.compiler.launch.launchMLM"
+            id="arden.plugin.compiler.launch.launchconfig.icon">
+        </launchConfigurationTypeImage>
+        <launchConfigurationTypeImage
+            icon="icons/julaunch.png"
+            configTypeID="arden.plugin.compiler.launch.testMLM"
             id="arden.plugin.compiler.launch.launchconfig.icon">
         </launchConfigurationTypeImage>
    </extension>
@@ -33,31 +45,61 @@
                mode="run">
          </launchMode>
       </launchConfigurationTabGroup>
+            <launchConfigurationTabGroup
+            class="arden.plugin.compiler.launch.junitconfig.TabGroup"
+            id="arden.plugin.compiler.launch.junitconfig.TabGroup"
+            type="arden.plugin.compiler.launch.testMLM">
+         <launchMode
+               description="Debug"
+               perspective="org.eclipse.debug.ui.DebugPerspective"
+               mode="debug">
+         </launchMode>
+         <launchMode
+               description="Run"
+               mode="run">
+         </launchMode>
+      </launchConfigurationTabGroup>
    </extension>
    <extension point="org.eclipse.debug.ui.launchShortcuts">
+      <!-- normal launch -->
       <shortcut
             class="arden.plugin.compiler.launch.launchconfig.LaunchShortcut"
             id="arden.plugin.compiler.launch.launchShortcut"
             label="Medical Logic Module"
             icon="icons/mlm.png"
+            path="arden.plugin.compiler.launch"
             modes="run, debug">
          <contextualLaunch>
             <enablement>
-               <with
-                     variable="selection">
-                  <count
-                        value="1">
-                  </count>
+               <with variable="selection">
+                  <count value="1"/>
                   <iterate>
-                     <test
-                           property="arden.plugin.compiler.launch.isLaunchableMlm">
-                     </test>
+                     <test property="arden.plugin.compiler.launch.isLaunchableMlm"/>
                   </iterate>
                </with>
             </enablement></contextualLaunch>
-         <configurationType
-               id="arden.plugin.compiler.launch.launchMLM">
-         </configurationType>
+         <configurationType id="arden.plugin.compiler.launch.launchMLM"/>
+      </shortcut>
+      <!-- junit launch -->
+      <shortcut
+          label="MLM Test"
+          icon="icons/julaunch.png"
+          helpContextId="org.eclipse.jdt.junit.launch_shortcut"
+          class="arden.plugin.compiler.launch.junitconfig.JUnitLaunchShortcut"
+          modes="run, debug"
+          id="arden.plugin.compiler.launch.junitShortcut">
+       <contextualLaunch>
+          <enablement>
+             <with variable="selection">
+                <count value="1"/>
+                <iterate>
+                   <test property="arden.plugin.compiler.launch.isLaunchableMlm"/>
+                   <test property="arden.plugin.compiler.launch.isInJavaProject"/>
+                </iterate>
+             </with>
+          </enablement>
+       </contextualLaunch>
+       <configurationType id="org.eclipse.jdt.junit.launchconfig"/>
       </shortcut>
    </extension>
    <extension point="org.eclipse.core.expressions.propertyTesters">
@@ -66,15 +108,19 @@
             id="arden.plugin.compiler.launch.MlmEditorTester"
             namespace="arden.plugin.compiler.launch"
             properties="isMlmEditor"
-            type="org.eclipse.core.runtime.IAdaptable">
-      </propertyTester>
+            type="org.eclipse.core.runtime.IAdaptable"/>
       <propertyTester
             class="arden.plugin.compiler.launch.core.LaunchableTester"
             id="arden.plugin.compiler.LaunchableTester"
             namespace="arden.plugin.compiler.launch"
             properties="isLaunchableMlm"
-            type="org.eclipse.core.runtime.IAdaptable">
-      </propertyTester>
+            type="org.eclipse.core.runtime.IAdaptable"/>
+      <propertyTester
+            class="arden.plugin.compiler.launch.core.JavaProjectTester"
+            id="arden.plugin.compiler.launch.JavaProjectTester"
+            namespace="arden.plugin.compiler.launch"
+            properties="isInJavaProject"
+            type="org.eclipse.core.runtime.IAdaptable"/>
    </extension>
    <extension point="org.eclipse.debug.core.sourceLocators">
       <sourceLocator

@@ -21,7 +21,10 @@ Require-Bundle: arden.plugin.compiler,
  org.eclipse.jdt.debug.ui,
  org.eclipse.swt,
  org.eclipse.jface,
- org.eclipse.core.variables
+ org.eclipse.core.variables,
+ org.eclipse.jdt.junit,
+ org.eclipse.jdt.ui,
+ org.eclipse.jdt.junit.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Arden2ByteCode Team
