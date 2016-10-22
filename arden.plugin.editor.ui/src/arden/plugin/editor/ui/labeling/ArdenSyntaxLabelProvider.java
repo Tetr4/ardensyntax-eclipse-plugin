@@ -20,6 +20,8 @@ import arden.plugin.editor.ardenSyntax.logic_slot;
 import arden.plugin.editor.ardenSyntax.maintenance_category;
 import arden.plugin.editor.ardenSyntax.mlm;
 import arden.plugin.editor.ardenSyntax.mlmname_slot;
+import arden.plugin.editor.ardenSyntax.scenario_slot;
+import arden.plugin.editor.ardenSyntax.validation_category;
 
 /**
  * Provides labels for a EObjects.
@@ -68,6 +70,10 @@ public class ArdenSyntaxLabelProvider extends DefaultEObjectLabelProvider {
     String text(knowledge_category knowledgeCategory) {
         return "Knowledge";
     }
+    
+    String text(validation_category validationCategory) {
+        return "validation";
+    }
 
     String text(data_slot slot) {
         return "data";
@@ -83,6 +89,11 @@ public class ArdenSyntaxLabelProvider extends DefaultEObjectLabelProvider {
 
     String text(action_slot slot) {
         return "action";
+    }
+    
+    String text(scenario_slot slot) {
+    	String scenarioTerminal = slot.getScenario();
+        return scenarioTerminal.substring(0, scenarioTerminal.length()-1);
     }
 
 }

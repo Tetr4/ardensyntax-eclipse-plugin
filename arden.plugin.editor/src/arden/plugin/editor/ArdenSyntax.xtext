@@ -227,8 +227,7 @@ terminal SCENARIO_TERMINAL: S C E N A R I O ':' -> ';';
 scenario_slot:
         scenario=SCENARIO_TERMINAL
         scenario_block=scenario_block?
-        ';;'
-;
+        ';;';
 
 
 /****** scenario block ******/
@@ -260,14 +259,14 @@ when_phrase:
 
 then_phrase:
     {triggered} 'MLM' 'SHOULD' not?='NOT'? 'BE' 'TRIGGERED'
-    | {conclude} expr=expr_indeterminate 'SHOULD' not?='NOT'? 'BE' 'CONCLUDE'
-    | {returned} expr=expr_mixed 'SHOULD' not?='NOT'? 'BE' 'RETURNED'
+    | {conclude} expr=expr_any 'SHOULD' not?='NOT'? 'BE' 'CONCLUDED'
+    | {returned} expr=expr_any_multi 'SHOULD' not?='NOT'? 'BE' 'RETURNED'
     | {returned_nothing} 'NOTHING' 'SHOULD' not?='NOT'? 'BE' 'RETURNED'
-    | {written_expr} expr=expr_indeterminate 'SHOULD' not?='NOT'? 'BE' 'WRITTEN' ('AT' 'DESTINATION'? dest=DATA_MAPPING)?
+    | {written_expr} expr=expr_any 'SHOULD' not?='NOT'? 'BE' 'WRITTEN' ('AT' 'DESTINATION'? dest=DATA_MAPPING)?
     | {written_msg} 'MESSAGE'? msg=DATA_MAPPING 'SHOULD' not?='NOT'? 'BE' 'WRITTEN' ('AT' 'DESTINATION'? dest=DATA_MAPPING)?
     | {written_nothing} 'NOTHING' 'SHOULD' not?='NOT'? 'BE' 'WRITTEN' ('AT' 'DESTINATION'? dest=DATA_MAPPING)?
-    | {called} mlm=mlm_definition 'SHOULD' not?='NOT'? 'BE' 'CALLED' ('WITH' args=expr_mixed)? ('DELAY' delay=expr_indeterminate)?
-    | {called_event} 'EVENT'? event=DATA_MAPPING 'SHOULD' not?='NOT'? 'BE' 'CALLED' ('DELAY' delay=expr_indeterminate)?
+    | {called} mlm=mlm_definition 'SHOULD' not?='NOT'? 'BE' 'CALLED' ('WITH' expr=expr_any_multi)? ('DELAY' delay=expr_any)?
+    | {called_event} 'EVENT'? event=DATA_MAPPING 'SHOULD' not?='NOT'? 'BE' 'CALLED' ('DELAY' delay=expr_any)?
     | {called_nothing} 'NOTHING' 'SHOULD' not?='NOT'? 'BE' 'CALLED';
 
 const_time:
@@ -280,12 +279,12 @@ mlm_definition:
     
 
 /****** validation expressions ******/
-expr_mixed:
-    exprs+=expr_indeterminate ("," exprs+=expr_indeterminate)*;
+expr_any_multi:
+    exprs+=expr_any (',' exprs+=expr_any)*;
     
-expr_indeterminate:
+expr_any:
     expr_sort
-    | {anything} 'ANYTHING' ('WHERE' filter=expr_sort)?;
+    | {anything} 'ANY' 'VALUE' ('WHERE' filter=expr_sort)?;
 
 
 /****** knowledge: slots ******/

@@ -3,6 +3,7 @@
 */
 package arden.plugin.editor.ui.outline;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtext.ui.editor.outline.IOutlineNode;
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
 
@@ -16,6 +17,9 @@ import arden.plugin.editor.ardenSyntax.logic_slot;
 import arden.plugin.editor.ardenSyntax.maintenance_category;
 import arden.plugin.editor.ardenSyntax.mlm;
 import arden.plugin.editor.ardenSyntax.mlms;
+import arden.plugin.editor.ardenSyntax.scenario_slot;
+import arden.plugin.editor.ardenSyntax.validation_body;
+import arden.plugin.editor.ardenSyntax.validation_category;
 
 /**
  * customization of the default outline structure
@@ -43,6 +47,16 @@ public class ArdenSyntaxOutlineTreeProvider extends DefaultOutlineTreeProvider {
             createNode(parentNode, body.getAction_slot());
     }
     
+    protected void _createChildren(IOutlineNode parentNode, validation_category validationCategory) {
+        validation_body body = validationCategory.getValidation_body();
+        EList<scenario_slot> scenarioSlots = body.getScenario_slots();
+        if(scenarioSlots != null) {
+        	for (scenario_slot scenario_slot : scenarioSlots) {
+                createNode(parentNode, scenario_slot);
+			}
+        }
+    }
+    
     protected boolean _isLeaf(maintenance_category feature) {
         return true;
     }
@@ -67,6 +81,11 @@ public class ArdenSyntaxOutlineTreeProvider extends DefaultOutlineTreeProvider {
     }
 
     protected boolean _isLeaf(action_slot feature) {
+        // don't include statements to keep outline flat
+        return true;
+    }
+    
+    protected boolean _isLeaf(scenario_slot feature) {
         // don't include statements to keep outline flat
         return true;
     }

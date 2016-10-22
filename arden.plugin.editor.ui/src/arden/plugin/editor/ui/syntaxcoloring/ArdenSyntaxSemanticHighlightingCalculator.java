@@ -33,13 +33,21 @@ public class ArdenSyntaxSemanticHighlightingCalculator implements ISemanticHighl
             "LINKS_TERMINAL"
     );
     
+    private static String scenarioTerminal = "SCENARIO_TERMINAL";
+    
     private static Set<String> slotKeywords = new HashSet<String>(Arrays.asList(
             "arden:",
             "version:",
             "date:",
-            "validation:",
             "type:"
     ));
+    
+    private static Set<String> validationCodes = new HashSet<>(Arrays.asList(
+    	    "production",
+    	    "research",
+    	    "testing",
+    	    "expired"		
+	));
 
     @Override
     public void provideHighlightingFor(XtextResource resource, IHighlightedPositionAcceptor acceptor, CancelIndicator indicator) {
@@ -68,7 +76,9 @@ public class ArdenSyntaxSemanticHighlightingCalculator implements ISemanticHighl
             if (element instanceof Keyword) {
                 // keyword
                 Keyword keyword = (Keyword) element;
-                if (slotKeywords.contains(keyword.getValue())) {
+                if (validationCodes.contains(keyword.getValue())) {
+                	highlightAsText(node, acceptor);
+                } else if (slotKeywords.contains(keyword.getValue())) {
                     // start of slot content
                     inSlot = true;
                 } else if (keyword.getValue().equals(";;")) {
@@ -89,28 +99,29 @@ public class ArdenSyntaxSemanticHighlightingCalculator implements ISemanticHighl
                     // terminal
                     TerminalRule terminalRule = (TerminalRule) called;
                     String name = terminalRule.getName();
-                    int index = slotTerminals.indexOf(name);
 
-                    if (index != -1) {
+                    if (slotTerminals.contains(name)) {
                         // terminal for slots
-                        highlightAsSlotTerminal(acceptor, node);
+                        highlightAsSlotTerminal(acceptor, node, 2);
+                    } else if (scenarioTerminal.equals(name)) {
+                    	highlightAsSlotTerminal(acceptor, node, 1);
                     }
                 }
             }
         }
     }
 
-    private void highlightAsSlotTerminal(IHighlightedPositionAcceptor acceptor, ILeafNode node) {
+    private void highlightAsSlotTerminal(IHighlightedPositionAcceptor acceptor, ILeafNode node, int nrSemicolons) {
     	int labelLength = node.getText().indexOf(':')+1;
         // highlight "<highlightName>:"
         acceptor.addPosition(node.getOffset(), labelLength,
                 ArdenSyntaxHighlightingConfiguration.KEYWORD_ID);
         // highlight slot content
-        int textlength = node.getLength() - labelLength - 2;
+        int textlength = node.getLength() - labelLength - nrSemicolons;
         acceptor.addPosition(node.getOffset() + labelLength, textlength,
                 ArdenSyntaxHighlightingConfiguration.TASK_ID);
-        // highlight the ";;"
-        acceptor.addPosition(node.getTotalEndOffset() - 2, 2,
+        // highlight the ";;" or ";"
+        acceptor.addPosition(node.getTotalEndOffset() - nrSemicolons, nrSemicolons,
                 ArdenSyntaxHighlightingConfiguration.KEYWORD_ID);
     }
 

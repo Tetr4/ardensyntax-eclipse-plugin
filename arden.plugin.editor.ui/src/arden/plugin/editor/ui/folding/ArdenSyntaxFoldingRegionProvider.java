@@ -12,6 +12,8 @@ import arden.plugin.editor.ardenSyntax.knowledge_category;
 import arden.plugin.editor.ardenSyntax.library_category;
 import arden.plugin.editor.ardenSyntax.logic_slot;
 import arden.plugin.editor.ardenSyntax.maintenance_category;
+import arden.plugin.editor.ardenSyntax.scenario_slot;
+import arden.plugin.editor.ardenSyntax.validation_category;
 
 public class ArdenSyntaxFoldingRegionProvider extends DefaultFoldingRegionProvider {
 
@@ -20,10 +22,12 @@ public class ArdenSyntaxFoldingRegionProvider extends DefaultFoldingRegionProvid
         boolean fold = eObject instanceof maintenance_category
                 | eObject instanceof library_category
                 | eObject instanceof knowledge_category
+                | eObject instanceof validation_category
                 | eObject instanceof data_slot
                 | eObject instanceof evoke_slot
                 | eObject instanceof logic_slot
-                | eObject instanceof action_slot;
+                | eObject instanceof action_slot
+        		| eObject instanceof scenario_slot;
         
         if(fold) {
             computeObjectFolding(eObject, foldingRegionAcceptor, false);
@@ -37,7 +41,8 @@ public class ArdenSyntaxFoldingRegionProvider extends DefaultFoldingRegionProvid
                 | object instanceof data_slot
                 | object instanceof evoke_slot
                 | object instanceof logic_slot
-                | object instanceof action_slot;
+                | object instanceof action_slot
+        		| object instanceof scenario_slot;
         
         return !ignoreContent;
     }
