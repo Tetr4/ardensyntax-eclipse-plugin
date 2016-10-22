@@ -51,7 +51,7 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 		if (urgency != null) {
 			double urgency_double = Double.valueOf(urgency);
 			if (urgency_double < 1 || urgency_double > 99) {
-				warning("Urgency should be between 1 and 99", ArdenSyntaxPackage.Literals.URGENCY_SLOT__URGENCY);
+				warning("Urgency should be between 1 and 99", ArdenSyntaxPackage.eINSTANCE.geturgency_slot_Urgency());
 			}
 		}
 	}
@@ -62,10 +62,10 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 		try {
 			double priority_double = Double.valueOf(priority);
 			if (priority_double < 1 || priority_double > 99) {
-				warning("Priority should be between 1 and 99", ArdenSyntaxPackage.Literals.PRIORITY_SLOT__PRIORITY);
+				warning("Priority should be between 1 and 99", ArdenSyntaxPackage.eINSTANCE.getpriority_slot_Priority());
 			}
 		} catch (NumberFormatException e) {
-			error("Priority must be a number", ArdenSyntaxPackage.Literals.PRIORITY_SLOT__PRIORITY);
+			error("Priority must be a number", ArdenSyntaxPackage.eINSTANCE.getpriority_slot_Priority());
 		}
 	}
 	
@@ -75,11 +75,11 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 		String message_suffix = " should only contain letters, digits, underscores, dashs or dots.";
 		if (name != null) {
 			if (!MLMNAME_TEXT.matcher(name).matches()) {
-				warning("Mlmname" + message_suffix, ArdenSyntaxPackage.Literals.MLMNAME_SLOT__MLMNAME);
+				warning("Mlmname" + message_suffix, ArdenSyntaxPackage.eINSTANCE.getmlmname_slot_Mlmname());
 			}
 		} else if ((name = mlmname_slot.getFilename()) != null) {
 			if (!MLMNAME_TEXT.matcher(name).matches()) {
-				warning("Filename" + message_suffix, ArdenSyntaxPackage.Literals.MLMNAME_SLOT__FILENAME);
+				warning("Filename" + message_suffix, ArdenSyntaxPackage.eINSTANCE.getmlmname_slot_Filename());
 			}
 		}
 	}
@@ -102,7 +102,7 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 			data_identifier_assignment assignment = (data_identifier_assignment) parent;
 
 			if (!(assignment.getPhrase() instanceof event_phrase)) {
-				warning("Only event variables can be evoked", ArdenSyntaxPackage.Literals.EVENT_ANY__EVENT_ID);
+				warning("Only event variables can be evoked", ArdenSyntaxPackage.eINSTANCE.getevent_any_Event_id());
 			}
 		}
 	}
@@ -145,16 +145,16 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 					EObject phrase = assignment.getPhrase();
 					if (phrase instanceof object_definition) {
 						error("Object variables cannot be redefined", identifier,
-								ArdenSyntaxPackage.Literals.IDENTIFIER__NAME);
+								ArdenSyntaxPackage.eINSTANCE.getidentifier_Name());
 					} else if (phrase instanceof event_phrase) {
 						error("Event variables cannot be redefined", identifier,
-								ArdenSyntaxPackage.Literals.IDENTIFIER__NAME);
+								ArdenSyntaxPackage.eINSTANCE.getidentifier_Name());
 					} else if (phrase instanceof mlm_phrase) {
 						error("MLM variables cannot be redefined", identifier,
-								ArdenSyntaxPackage.Literals.IDENTIFIER__NAME);
+								ArdenSyntaxPackage.eINSTANCE.getidentifier_Name());
 					} else if (phrase instanceof interface_phrase) {
 						error("Interface variables cannot be redefined", identifier,
-								ArdenSyntaxPackage.Literals.IDENTIFIER__NAME);
+								ArdenSyntaxPackage.eINSTANCE.getidentifier_Name());
 					}
 				}
 			}
@@ -190,7 +190,7 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 				for (identifier identifier : identifiers) {
 					if (sameName(loopVar, identifier)) {
 						error("The loop variable cannot be assigned to", identifier,
-								ArdenSyntaxPackage.Literals.IDENTIFIER__NAME);
+								ArdenSyntaxPackage.eINSTANCE.getidentifier_Name());
 					}
 				}
 			}
@@ -219,7 +219,7 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 				char type = matcher.group(1).charAt(0);
 				if (!VALID_FORMAT_TYPES.contains(type)) {
 					warning("The format type <" + type + "> is not supported",
-							ArdenSyntaxPackage.Literals.EXPR_STRING__FORMAT_STRING_LIST);
+							ArdenSyntaxPackage.eINSTANCE.getexpr_string_Format_string_list());
 					continue;
 				}
 			}
@@ -235,7 +235,7 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 
 		if (RESERVED_KEYWORDS.contains(name.toLowerCase())) {
 			error("<" + name + "> is reserved and may not be used as a variable name",
-					ArdenSyntaxPackage.Literals.IDENTIFIER__NAME);
+					ArdenSyntaxPackage.eINSTANCE.getidentifier_Name());
 		}
 	}
 	private static final Set<String> RESERVED_KEYWORDS = new HashSet<String>(Arrays.asList( "Abs", "action", "after", "ago", "alert", "all", "and", "any", "arccos", "arcsin",
@@ -263,7 +263,7 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 	public void checkIdentifierLength(identifier identifier) {
 		String name = identifier.getName();
 		if (name.length() > 80) {
-			lengthWarning("Identifier", name.length(), ArdenSyntaxPackage.Literals.IDENTIFIER__NAME);
+			lengthWarning("Identifier", name.length(), ArdenSyntaxPackage.eINSTANCE.getidentifier_Name());
 		}
 	}
 	
@@ -272,7 +272,7 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 		String institution = institution_slot.getInstitution();
 		if (institution.length() > 80) {
 			lengthWarning("Insitution", institution.length(),
-					ArdenSyntaxPackage.Literals.INSTITUTION_SLOT__INSTITUTION);
+					ArdenSyntaxPackage.eINSTANCE.getinstitution_slot_Institution());
 		}
 	}
 	
@@ -281,9 +281,9 @@ public class ArdenSyntaxValidator extends AbstractArdenSyntaxValidator {
 		String mlmname = mlmname_slot.getMlmname();
 		String filename = mlmname_slot.getFilename();
 		if (mlmname != null && mlmname.length() > 80) {
-			lengthWarning("Mlmname", mlmname.length(), ArdenSyntaxPackage.Literals.MLMNAME_SLOT__MLMNAME);
+			lengthWarning("Mlmname", mlmname.length(), ArdenSyntaxPackage.eINSTANCE.getmlmname_slot_Mlmname());
 		} else if (filename != null && filename.length() > 80) {
-			lengthWarning("Filename", filename.length(), ArdenSyntaxPackage.Literals.MLMNAME_SLOT__FILENAME);
+			lengthWarning("Filename", filename.length(), ArdenSyntaxPackage.eINSTANCE.getmlmname_slot_Filename());
 		}
 	}
 	

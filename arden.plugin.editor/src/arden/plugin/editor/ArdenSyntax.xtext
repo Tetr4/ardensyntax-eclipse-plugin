@@ -123,8 +123,9 @@ mlm:
     maintainance_category=maintenance_category
     library_category=library_category
     knowledge_category=knowledge_category
+    validation_category=validation_category?
     'end:';
-                
+
 maintenance_category:
     'maintenance:' maintainance_body=maintenance_body;
 
@@ -161,6 +162,11 @@ knowledge_body:
     action_slot=action_slot
     urgency_slot=urgency_slot?;
                 
+validation_category:
+    'validation:' validation_body=validation_body;
+
+validation_body:
+    scenario_slots+=scenario_slot+;
 
 /****** maintenance slots ******/
 terminal TITLE_TERMINAL: T I T L E ':' -> ';;';
@@ -214,6 +220,72 @@ citations_slot: citations=CITATIONS_TERMINAL;
 // TODO formated links 
 terminal LINKS_TERMINAL: L I N K S ':' -> ';;';
 links_slot: links=LINKS_TERMINAL;
+
+
+/****** validation slots ******/
+terminal SCENARIO_TERMINAL: S C E N A R I O ':' -> ';';
+scenario_slot:
+        scenario=SCENARIO_TERMINAL
+        scenario_block=scenario_block?
+        ';;'
+;
+
+
+/****** scenario block ******/
+scenario_block:
+    {gblk} 'GIVEN' given=given_phrase (';' and=given_and_block?)?
+    | {wblk} 'WHEN' when=when_phrase (';' and=when_and_block?)?
+    | {tblk} 'THEN' then=then_phrase (';' and=then_and_block?)?;
+
+given_and_block:
+    scenario_block
+    | {gblk} 'AND' given=given_phrase(';' and=given_and_block?)?;
+
+when_and_block:
+    scenario_block
+    | {wblk} 'AND' when=when_phrase (';' and=when_and_block?)?;
+
+then_and_block:
+    scenario_block
+    | {tblk} 'AND' then=then_phrase (';' and=then_and_block?)?;
+
+given_phrase:
+    'READ'? data=DATA_MAPPING is expr=expr
+    | 'INTERFACE' interface=DATA_MAPPING is expr=expr;
+
+when_phrase:
+    {call} 'MLM' is 'CALLED' ('WITH' args=expr)?
+    | {event_call} 'EVENT'? event=DATA_MAPPING is 'CALLED' ('WITH' 'TIME' time=const_time ('EVENTTIME' eventtime=const_time)?)?
+    | {time} ('CURRENTTIME'|'NOW') is time=const_time;
+
+then_phrase:
+    {triggered} 'MLM' 'SHOULD' not?='NOT'? 'BE' 'TRIGGERED'
+    | {conclude} expr=expr_indeterminate 'SHOULD' not?='NOT'? 'BE' 'CONCLUDE'
+    | {returned} expr=expr_mixed 'SHOULD' not?='NOT'? 'BE' 'RETURNED'
+    | {returned_nothing} 'NOTHING' 'SHOULD' not?='NOT'? 'BE' 'RETURNED'
+    | {written_expr} expr=expr_indeterminate 'SHOULD' not?='NOT'? 'BE' 'WRITTEN' ('AT' 'DESTINATION'? dest=DATA_MAPPING)?
+    | {written_msg} 'MESSAGE'? msg=DATA_MAPPING 'SHOULD' not?='NOT'? 'BE' 'WRITTEN' ('AT' 'DESTINATION'? dest=DATA_MAPPING)?
+    | {written_nothing} 'NOTHING' 'SHOULD' not?='NOT'? 'BE' 'WRITTEN' ('AT' 'DESTINATION'? dest=DATA_MAPPING)?
+    | {called} mlm=mlm_definition 'SHOULD' not?='NOT'? 'BE' 'CALLED' ('WITH' args=expr_mixed)? ('DELAY' delay=expr_indeterminate)?
+    | {called_event} 'EVENT'? event=DATA_MAPPING 'SHOULD' not?='NOT'? 'BE' 'CALLED' ('DELAY' delay=expr_indeterminate)?
+    | {called_nothing} 'NOTHING' 'SHOULD' not?='NOT'? 'BE' 'CALLED';
+
+const_time:
+    ISO_DATE
+    | ISO_DATE_TIME;
+    
+mlm_definition:
+    'MLM'? 'MLM_SELF'
+    | 'MLM'? TERM ('FROM' 'INSTITUTION' STRING_LITERAL)?;
+    
+
+/****** validation expressions ******/
+expr_mixed:
+    exprs+=expr_indeterminate ("," exprs+=expr_indeterminate)*;
+    
+expr_indeterminate:
+    expr_sort
+    | {anything} 'ANYTHING' ('WHERE' filter=expr_sort)?;
 
 
 /****** knowledge: slots ******/
@@ -397,7 +469,10 @@ expr_factor:
     
 // helper for better AST elements
 expr_array_access:
-    expr_factor_atom ({expr_array_access.left=current} => '[' index=expr ']')?;
+    expr_construct ({expr_array_access.left=current} => '[' index=expr ']')?;
+    
+expr_construct:
+        expr_factor_atom ('|' time_value)?;
 
 expr_factor_atom:
     {identifier_use} id=[identifier]
