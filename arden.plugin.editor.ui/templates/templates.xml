@@ -170,4 +170,32 @@ ELSE
 ENDIF;
 </template>
 
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.kw_validation:" deleted="false" description="Add the validation category" enabled="true" id="validationcategory" name="Validation category">validation:
+    scenario: ${description};
+        ${cursor}
+    ;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.scenario_slot" deleted="false" description="Add a scenario" enabled="true" id="scenario" name="scenario">scenario: ${description};
+    ${cursor}
+;;
+</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.kw_GIVEN" deleted="false" description="given statement" enabled="true" id="given" name="given">GIVEN {${mapping}} IS ${TRUE};</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.kw_WHEN" deleted="false" description="when call statement" enabled="true" id="whencall" name="whencall">WHEN THE MLM IS CALLED;</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.kw_WHEN" deleted="false" description="when time statement" enabled="true" id="whentime" name="whentime">WHEN NOW IS ${id:date('YYYY-MM-dd')};</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.kw_THEN" deleted="false" description="then call statement" enabled="true" id="thencall" name="thencall">THEN '${mlm}' SHOULD BE CALLED;</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.kw_THEN" deleted="false" description="then conclude statement" enabled="true" id="thenconclude" name="thenconclude">THEN ${TRUE} SHOULD BE CONCLUDED;</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.kw_THEN" deleted="false" description="then return statement" enabled="true" id="thenreturn" name="thenreturn">THEN ${TRUE} SHOULD BE RETURNED;</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.kw_THEN" deleted="false" description="then trigger statment" enabled="true" id="thentrigger" name="thentrigger">THEN THE MLM SHOULD BE TRIGGERED;</template>
+
+<template autoinsert="true" context="arden.plugin.editor.ArdenSyntax.kw_THEN" deleted="false" description="then write statement" enabled="true" id="thenwrite" name="thenwrite">THEN {${message}} SHOULD BE WRITTEN;</template>
+
+
 </templates>
