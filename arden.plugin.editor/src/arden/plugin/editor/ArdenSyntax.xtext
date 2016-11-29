@@ -471,7 +471,7 @@ expr_array_access:
     expr_construct ({expr_array_access.left=current} => '[' index=expr ']')?;
     
 expr_construct:
-        expr_factor_atom ('|' time_value)?;
+        expr_factor_atom ('|' time=expr_factor_atom)?;
 
 expr_factor_atom:
     {identifier_use} id=[identifier]
