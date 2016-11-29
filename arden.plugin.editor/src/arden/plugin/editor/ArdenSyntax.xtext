@@ -429,14 +429,24 @@ expr_times:
         | {expr_div.left=current} '/' right=expr_times
     )?;
 
-// contains a merge of <expr_before>, <expr_ago> and <expr_duration> to solve ambiguity
+// contains a merge of <expr_before>, <expr_ago>, <expr_duration> and <expr_construct> to solve ambiguity
 expr_power:
     expr_function (
         {expr_power.left=current} '**' right=expr_function
+        | {expr_construct.left=current} '|' time=expr_construct_tail
         | {expr_duration.left=current} unit=duration_op ( // solve ambiguity with 'FROM' in <expr_string>
             (=>(option='FROM'|option='BEFORE'|option='AFTER') right=expr_function) unit_right=duration_op? ago?='AGO'?
             | ago?='AGO'?
-        ) 
+        ) ('|' time=expr_construct_tail)?
+    )?;
+
+// equivalent to <expr_before>
+expr_construct_tail:
+    time=expr_function (
+        unit=duration_op (
+            (=>(option='FROM'|option='BEFORE'|option='AFTER') right=expr_function) unit_right=duration_op? ago?='AGO'?
+            | ago?='AGO'?
+        )
     )?;
     
 expr_function:
@@ -468,10 +478,7 @@ expr_factor:
     
 // helper for better AST elements
 expr_array_access:
-    expr_construct ({expr_array_access.left=current} => '[' index=expr ']')?;
-    
-expr_construct:
-        expr_factor_atom ('|' time=expr_factor_atom)?;
+    expr_factor_atom ({expr_array_access.left=current} => '[' index=expr ']')?;
 
 expr_factor_atom:
     {identifier_use} id=[identifier]
