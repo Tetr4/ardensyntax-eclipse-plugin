@@ -254,8 +254,8 @@ given_phrase:
 
 when_phrase:
     {call} 'MLM' is 'CALLED' ('WITH' args=expr)?
-    | {event_call} 'EVENT'? event=DATA_MAPPING is 'CALLED' ('WITH' 'TIME' time=const_time ('EVENTTIME' eventtime=const_time)?)?
-    | {time} ('CURRENTTIME'|'NOW') is time=const_time;
+    | {event_call} 'EVENT'? event=DATA_MAPPING is 'CALLED' ('WITH' 'TIME' time=expr ('EVENTTIME' eventtime=expr)?)?
+    | {time} ('CURRENTTIME'|'NOW') is time=expr;
 
 then_phrase:
     {triggered} 'MLM' 'SHOULD' not?='NOT'? 'BE' 'TRIGGERED'
@@ -269,10 +269,6 @@ then_phrase:
     | {called_event} 'EVENT'? event=DATA_MAPPING 'SHOULD' not?='NOT'? 'BE' 'CALLED' ('DELAY' delay=expr_any)?
     | {called_nothing} 'NOTHING' 'SHOULD' not?='NOT'? 'BE' 'CALLED';
 
-const_time:
-    ISO_DATE
-    | ISO_DATE_TIME;
-    
 mlm_definition:
     'MLM'? 'MLM_SELF'
     | 'MLM'? TERM ('FROM' 'INSTITUTION' STRING_LITERAL)?;
