@@ -25,13 +25,13 @@ The projects contain the following:
 
 ## Building
 
-0. To build Arden4Eclipse you need to have an Eclipse installation with the following tools:
-  - [Eclipse PDE (Plug-in Development Environment)](https://marketplace.eclipse.org/content/eclipse-pde-plug-development-environment)
-  - [Xtext](https://marketplace.eclipse.org/content/xtext)
-  - [Eclipse Xtend](https://marketplace.eclipse.org/content/eclipse-xtend)
-  - Eclipse RCP Target Components (optional, includes sources/javadoc for the Eclipse API)
-0. Import all projects and then generate the parser and xtext language artifacts by right-clicking on [arden.plugin.editor/.../ArdenSyntax.xtext](arden.plugin.editor/src/arden/plugin/editor/ArdenSyntax.xtext) and selecting *Run As* &rArr; *Generate Xtext Artifacts*
-0. For the Arden2ByteCode integration, you need to place a `arden2bytecode.jar` into the [arden.plugin.compiler](arden.plugin.compiler) project. You can get the newest release [here](https://github.com/PLRI/arden2bytecode/releases/latest).
+1. To build Arden4Eclipse you need to have an Eclipse installation with the following tools:
+   - [Eclipse PDE (Plug-in Development Environment)](https://marketplace.eclipse.org/content/eclipse-pde-plug-development-environment)
+   - [Xtext](https://marketplace.eclipse.org/content/xtext)
+   - [Eclipse Xtend](https://marketplace.eclipse.org/content/eclipse-xtend)
+   - Eclipse RCP Target Components (optional, includes sources/javadoc for the Eclipse API)
+1. Import all projects and then generate the parser and xtext language artifacts by right-clicking on [arden.plugin.editor/.../ArdenSyntax.xtext](arden.plugin.editor/src/arden/plugin/editor/ArdenSyntax.xtext) and selecting *Run As* &rArr; *Generate Xtext Artifacts*
+1. For the Arden2ByteCode integration, you need to place a `arden2bytecode.jar` into the [arden.plugin.compiler](arden.plugin.compiler) project. You can get the newest release [here](https://github.com/PLRI/arden2bytecode/releases/latest).
 
 To run Arden4Eclipse in a new Eclipse runtime: right-click on a project and select *Run As* &rArr; *Eclipse Application*
 
